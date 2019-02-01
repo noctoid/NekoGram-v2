@@ -35,3 +35,12 @@ On her default timeline, Ayaka sees a picture of a cat and she enjoys the cutene
 On her default timeline, Ayaka sees a picture of a cat and she enjoys the cuteness of the cat and she clicks repost button under the cat posting to repost it.
 
 
+## Admin
+Yu is an administrator of NekoGram and she is in charge of manage all uses and postings.
+
+#### Admin deletes posting
+TBD
+#### Admin bans user
+TBD
+#### Admin unbans user
+TBD
