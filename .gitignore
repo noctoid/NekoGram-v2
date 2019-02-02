@@ -6,6 +6,9 @@ __pycache__/
 # User added
 .vscode/
 
+# visua paradigm
+design/*.vpp.bak_*
+
 # C extensions
 *.so
 
