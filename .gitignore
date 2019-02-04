@@ -5,10 +5,11 @@ __pycache__/
 
 # User added
 .vscode/
-
+.idea/
+*/.idea/
 # visua paradigm
 design/*.vpp.bak_*
-
+design/*.lck
 # C extensions
 *.so
 
