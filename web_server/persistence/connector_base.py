@@ -1,8 +1,13 @@
 #!/usr/bin/python3
 import pika
 import uuid
+import json
 
-from settings import Q_SERVER, Q_USERNAME, Q_PASSWORD
+# from settings import Q_SERVER, Q_USERNAME, Q_PASSWORD
+
+Q_SERVER = "192.168.0.31"
+Q_USERNAME = "nekogram"
+Q_PASSWORD = "qwer1234"
 
 
 sample_query = {
@@ -13,11 +18,12 @@ sample_query = {
     }
 }
 
+
 class PersistenceConnector(object):
     def __init__(self):
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(
-                host = Q_SERVER,
+                host=Q_SERVER,
                 credentials=pika.PlainCredentials(Q_USERNAME, Q_PASSWORD)
             )
         )
@@ -33,27 +39,27 @@ class PersistenceConnector(object):
 
     def on_response(self, ch, method, props, body):
         if self.corr_id == props.correlation_id:
-            self.on_response = body
+            self.response = body
 
     def call(self, obj):
         self.response = None
-        self.corr_id = str(uuid.uuid4)
+        self.corr_id = str(uuid.uuid4())
         self.channel.basic_publish(
             exchange='',
             routing_key='rpc_queue',
             properties=pika.BasicProperties(
-                 reply_to = self.callback_queue,
-                 correlation_id = self.corr_id,
+                 reply_to=self.callback_queue,
+                 correlation_id=self.corr_id,
             ),
-            body=str(obj)
+            body=json.dumps(obj)
         )
         while self.response is None:
             self.connection.process_data_events()
-        return int(self.response)
+        return self.response
 
 
 if __name__ == "__main__":
     db_rpc = PersistenceConnector()
-    print(" [x] Requesting foobar")
-    response = fibonacci_rpc.call({"foo": "bar"})
+    print(" [x] Requesting sample query")
+    response = db_rpc.call(sample_query)
     print(" [.] Got", response)
