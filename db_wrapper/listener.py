@@ -24,13 +24,14 @@ def on_request(ch, method, props, body):
     print(" [.] ", query)
 
     db = MongoDB_Connector()
-    response = db.mockup()
+    # response = db.findByKeyValue("user-content", "postings", "post-id", 1234567)
+    response = db.findByKeyValue(query["db"], query["colle"], query["query"]["key"], query["query"]["value"])
 
     ch.basic_publish(
         exchange='',
         routing_key=props.reply_to,
         properties=pika.BasicProperties(correlation_id=props.correlation_id),
-        body=str(114514)
+        body=json.dumps(response)
     )
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
