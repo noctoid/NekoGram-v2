@@ -16,7 +16,7 @@ To ensure maximum data access throughput, the Database Wrapper is designed to li
 API:
 ```
 {
-    "db": "postings",
+    "object": "postings",
     "query" : {
         "method": "read",
         "posting-id": 123456789

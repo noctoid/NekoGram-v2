@@ -1,19 +1,28 @@
 #!/usr/bin/python3
-from pymongo import MongoClient
+import asyncio
+from motor import motor_asyncio
+from pprint import pprint
 
-
-class MongoDB_Connector:
-    def __init__(self, ip="127.0.0.1", port="27017", username="", password=""):
+class Async_Mongo_Connector:
+    def __init__(self, ip="127.0.0.1", port="27017", login="", password=""):
         self.ip = ip
         self.port = port
-        self.username = username
+        self.login = login
         self.password = password
 
-        self.client = MongoClient("mongodb://" + ip + ":" + port)
+        self.client = motor_asyncio.AsyncIOMotorClient()
 
-    def mockup(self):
+    async def mockup(self):
         return {"test": "result", "success": 233}
 
-    def findByKeyValue(self, db, colle, key, value):
+    async def findByKeyValue(self, db, colle, key, value):
         # return a list of found document
-        return [doc["content"] for doc in self.client[db][colle].find({key: value})]
+        doc = await self.client[db][colle].find_one({key:value})
+        return doc
+
+if __name__ == "__main__":
+    c = Async_Mongo_Connector()
+    loop = asyncio.get_event_loop()
+    # loop.run_until_complete(c.mockup)
+    result = loop.run_until_complete(c.findByKeyValue("user-content","postings", "post-id", 1234567))
+    pprint(result)
