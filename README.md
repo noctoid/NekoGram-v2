@@ -13,16 +13,53 @@ NekoGram Frontend App is an single page javascript application written in React.
 
 To ensure maximum data access throughput, the Database Wrapper is designed to listen RPC calls from RabbitMQ, and fetch the command from the containing json.
 
-API:
+Sample Postings Related Requests:
 ```
 {
     "object": "postings",
     "query" : {
         "method": "read",
-        "posting-id": 123456789
+        "posting-id": 123456789,
+        "payload": {}
+    }
+}
+
+{
+    "object": "postings",
+    "query" : {
+        "method": "delete",
+        "posting-id": 123456789,
+        "payload": {}
+    }
+}
+
+{
+    "object": "postings",
+    "query" : {
+        "method": "update",
+        "posting-id": 123456789,
+        "payload": {
+            "text": "blahblahblah...",
+            "media-mime": "image/jpg",
+            "media-url": "https://example.com/image/s123456789",
+        }
+    }
+}
+
+{
+    "object": "postings",
+    "query" : {
+        "method": "create",
+        "posting-id": 123456789,
+        "payload": {
+            "text": "blahblahblah...",
+            "media-mime": "image/jpg",
+            "media-url": "https://example.com/image/s123456789",
+        }
     }
 }
 ```
+
 
 Data retrieved will be in form of certain object also packed in json.
 
