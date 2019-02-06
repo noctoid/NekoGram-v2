@@ -3,7 +3,31 @@ NekoGram Version 2
 
 ## Web Server
 
-NekoGram web server is built on the great Python web framework Sanic which supports async/await functions that vastly increase the performance of any web app built using it. 
+NekoGram web server is built on the great Python web framework Sanic which supports async/await functions that vastly increase the performance of any web app built using it.
+
+### API
+##### postings
+All postings related APIs are like this /p/... 
+
+```html
+/p/get/
+/p/create/
+/p/delete/
+/p/update/
+```
+##### comments
+```html
+/c/get/
+/c/create/
+/c/delete/
+/c/update/
+```
+##### likes 
+```html
+/l/get/
+/l/do/
+/l/undo/
+```
 
 ## Front End App
 
@@ -16,7 +40,7 @@ To ensure maximum data access throughput, the Database Wrapper is designed to li
 Sample Postings Related Requests:
 ```json
 {
-    "ver": 1,
+    "ver": "0.1",
     "object": "postings",
     "query" : {
         "method": "read",
@@ -29,7 +53,7 @@ Sample Postings Related Requests:
 ```
 ```json
 {
-    "ver": 1,
+    "ver": "0.1",
     "object": "postings",
     "query" : {
         "method": "delete",
@@ -42,7 +66,7 @@ Sample Postings Related Requests:
 ```
 ```json
 {
-    "ver": 1,
+    "ver": "0.1",
     "object": "postings",
     "query" : {
         "method": "update",
@@ -58,7 +82,7 @@ Sample Postings Related Requests:
 ```
 ```json
 {
-    "ver": 1,
+    "ver": "0.1",
     "object": "postings",
     "query" : {
         "method": "create",
@@ -76,7 +100,7 @@ Sample Comments Requests:
 Create comment
 ```json
 {
-    "ver": 1,
+    "ver": "0.1",
     "object": "comments",
     "query": {
         "method": "create",
@@ -92,7 +116,7 @@ Create comment
 Delete comment
 ```json
 {
-    "ver": 1,
+    "ver": "0.1",
     "object": "comments",
     "query": {
         "method": "delete",
@@ -109,7 +133,7 @@ Sample Likes Requests:
 Like
 ```json
 {
-  "ver": 1,
+  "ver": "0.1",
   "object": "likes",
   "query": {
     "method": "create",
@@ -123,7 +147,7 @@ Like
 Dislike
 ```json
 {
-  "ver": 1,
+  "ver": "0.1",
   "object": "likes",
   "query": {
     "method": "delete",
