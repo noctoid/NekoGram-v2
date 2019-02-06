@@ -19,8 +19,8 @@ Sample Postings Related Requests:
     "object": "postings",
     "query" : {
         "method": "read",
-        "posting-id": 123456789,
         "payload": {
+          "posting-id": 123456789,
           "user-id": "..."
         }
     }
@@ -31,8 +31,8 @@ Sample Postings Related Requests:
     "object": "postings",
     "query" : {
         "method": "delete",
-        "posting-id": 123456789,
         "payload": {
+          "posting-id": 123456789,
           "user-id": "..."
         }
     }
@@ -43,12 +43,12 @@ Sample Postings Related Requests:
     "object": "postings",
     "query" : {
         "method": "update",
-        "posting-id": 123456789,
         "payload": {
+            "posting-id": 123456789,
             "user-id": "...",
             "text": "blahblahblah...",
             "media-mime": "image/jpg",
-            "media-url": "https://example.com/image/s123456789",
+            "media-url": "https://example.com/image/s123456789"
         }
     }
 }
@@ -58,8 +58,8 @@ Sample Postings Related Requests:
     "object": "postings",
     "query" : {
         "method": "create",
-        "posting-id": 123456789,
         "payload": {
+            "posting-id": 123456789,
             "user-id": "...",
             "text": "blahblahblah...",
             "media-mime": "image/jpg",
@@ -69,15 +69,31 @@ Sample Postings Related Requests:
 }
 ```
 Sample Comments Requests:
+Create comment
 ```json
 {
     "object": "comments",
     "query": {
         "method": "create",
-        "posting-id": 123456789,
         "payload": {
+            "posting-id": 123456789,
             "user-id": "...",
+            "comment-id": "...",
             "text": "blahblahblah...."
+        }
+    }
+}
+```
+Delete comment
+```json
+{
+    "object": "comments",
+    "query": {
+        "method": "delete",
+        "payload": {
+            "posting-id": 123456789,
+            "user-id": "...",
+            "comment-id": "..."
         }
     }
 }
@@ -90,8 +106,8 @@ Like
   "object": "likes",
   "query": {
     "method": "create",
-    "posting-id": 123456789,
     "payload": {
+      "posting-id": 123456789,
       "user-id": "..."
     }
   }
@@ -103,8 +119,8 @@ Dislike
   "object": "likes",
   "query": {
     "method": "delete",
-    "posting-id": 123456789,
     "payload": {
+      "posting-id": 123456789,
       "user-id": "..."
     }
   }
