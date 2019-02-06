@@ -16,6 +16,7 @@ To ensure maximum data access throughput, the Database Wrapper is designed to li
 Sample Postings Related Requests:
 ```json
 {
+    "ver": 1,
     "object": "postings",
     "query" : {
         "method": "read",
@@ -28,6 +29,7 @@ Sample Postings Related Requests:
 ```
 ```json
 {
+    "ver": 1,
     "object": "postings",
     "query" : {
         "method": "delete",
@@ -40,6 +42,7 @@ Sample Postings Related Requests:
 ```
 ```json
 {
+    "ver": 1,
     "object": "postings",
     "query" : {
         "method": "update",
@@ -55,6 +58,7 @@ Sample Postings Related Requests:
 ```
 ```json
 {
+    "ver": 1,
     "object": "postings",
     "query" : {
         "method": "create",
@@ -72,6 +76,7 @@ Sample Comments Requests:
 Create comment
 ```json
 {
+    "ver": 1,
     "object": "comments",
     "query": {
         "method": "create",
@@ -87,6 +92,7 @@ Create comment
 Delete comment
 ```json
 {
+    "ver": 1,
     "object": "comments",
     "query": {
         "method": "delete",
@@ -103,6 +109,7 @@ Sample Likes Requests:
 Like
 ```json
 {
+  "ver": 1,
   "object": "likes",
   "query": {
     "method": "create",
@@ -116,6 +123,7 @@ Like
 Dislike
 ```json
 {
+  "ver": 1,
   "object": "likes",
   "query": {
     "method": "delete",
