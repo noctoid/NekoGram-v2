@@ -1,10 +1,10 @@
-#!/usr/bin/python3
+#!/usr/bin/python3.7
 # import pika
 import uuid
 import json
 
 import asyncio
-from aio_pika import connect, connect_robust, IncomingMessage, Message
+from aio_pika import connect, IncomingMessage, Message
 
 # from settings import Q_SERVER, Q_USERNAME, Q_PASSWORD
 

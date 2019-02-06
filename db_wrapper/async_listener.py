@@ -1,8 +1,8 @@
-#!/usr/bin/python3
+#!/usr/bin/python3.7
 import json
 import asyncio
 from functools import partial
-from aio_pika import connect, connect_robust, IncomingMessage, Exchange, Message
+from aio_pika import connect, IncomingMessage, Exchange, Message
 
 
 async def on_message(exchange: Exchange, message: IncomingMessage):

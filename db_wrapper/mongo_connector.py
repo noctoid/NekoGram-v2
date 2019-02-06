@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python3.7
 import asyncio
 from motor import motor_asyncio
 from pprint import pprint
