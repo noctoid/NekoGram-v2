@@ -20,15 +20,18 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
         try:
             req = json.loads(n)
             api_version_used = req['ver']
+            method_used      = req["method"]
             object_requested = req['object']
             query            = req['query']
 
             assert api_version_used == "0.1"
+            assert method_used in ['read', 'delete', 'update', 'create']
             assert object_requested in ["postings", "comments", "likes"]
             assert len(query) > 0
 
             c = Retriever()
-            response = await c.get_posting_by_id(query)
+            c.load(object_requested, method_used, query)
+            response = await c.get_posting_by_id()
             response["_id"] = "ObjID"
             print(response, type(response))
             response = json.dumps(response)
@@ -37,9 +40,13 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
             print("[!] Invalid Incoming Request ", n)
             response = json.dumps({"status": 400})
 
-        except:
-            print("[!] Internal Error ", n)
+        except ConnectionError:
+            print("[!] Failed to Connect Database ", n)
             response = json.dumps({"status": 500})
+
+        # except:
+        #     print("[!] Internal Error ", n)
+        #     response = json.dumps({"status": 500})
 
         
         await exchange.publish(
@@ -54,12 +61,12 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
 
 async def main(loop):
     # Perform connection
-    connection = await connect(
-        host="192.168.0.32",
-        login="nekogram",
-        password="qwer1234",
-    )
-    # connection = await connect("amqp://guest:guest@127.0.0.1/", loop=loop)
+    # connection = await connect(
+    #     host="192.168.0.32",
+    #     login="nekogram",
+    #     password="qwer1234",
+    # )
+    connection = await connect("amqp://guest:guest@127.0.0.1/", loop=loop)
 
     # Creating a channel
     # channel = await connection.channel(publisher_confirms=False)

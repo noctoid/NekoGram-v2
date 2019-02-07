@@ -16,8 +16,8 @@ Q_PASSWORD = "qwer1234"
 sample_query = {
     "ver": "0.1",
     "object": "postings",
+    "method": "read",
     "query" : {
-        "method": "read",
         "payload": {
           "posting-id": 1234567,
         }
@@ -34,11 +34,12 @@ class AsyncPersistenceConnector:
         self.loop = loop
 
     async def connect(self):
-        self.connection = await connect(
-            host="192.168.0.32",
-            login="nekogram",
-            password="qwer1234",
-        )
+        # self.connection = await connect(
+        #     host="192.168.0.32",
+        #     login="nekogram",
+        #     password="qwer1234",
+        # )
+        self.connection = await connect("amqp://guest:guest@127.0.0.1/", loop=self.loop)
         # self.channel = await self.connection.channel(publisher_confirms=False)
         self.channel = await self.connection.channel()
         self.callback_queue = await self.channel.declare_queue(
@@ -54,7 +55,7 @@ class AsyncPersistenceConnector:
 
     async def call(self, n):
         correlation_id = str(uuid.uuid4()).encode()
-        print(correlation_id)
+        # print(correlation_id)
         future = self.loop.create_future()
 
         self.futures[correlation_id] = future
@@ -73,7 +74,7 @@ class AsyncPersistenceConnector:
 
 async def main(loop):
     a_db_rpc = await AsyncPersistenceConnector(loop).connect()
-    print(" [x] Requesting sample query async")
+    # print(" [x] Requesting sample query async")
     response = await a_db_rpc.call(sample_query)
     print(" [.] Got %r" % response)
 
@@ -83,5 +84,6 @@ if __name__ == "__main__":
     # print(" [x] Requesting sample query")
     # response = db_rpc.call(sample_query)
     # print(" [.] Got", response)
+
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main(loop))

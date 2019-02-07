@@ -10,22 +10,27 @@ class Retriever:
         except:
             raise ConnectionError
 
+    def load(self, obj, method, query):
+        self.obj = obj
+        self.method = method
+        self.query = query
 
-    async def get_posting_by_id(self, query):
+
+    async def get_posting_by_id(self):
         result = await self.mongo_client.findByKeyValue(
             "user-content", "postings",
-            "post-id", query["payload"]["posting-id"]
+            "post-id", self.query["payload"]["posting-id"]
         )
         return result
 
 if __name__ == "__main__":
     c = Retriever()
     loop = asyncio.get_event_loop()
-    result = loop.run_until_complete(c.get_posting_by_id({
-        "method": "read",
+    c.load("postings", "read", {
         "payload": {
             "posting-id": 1234567
         }
-    }))
+    })
+    result = loop.run_until_complete(c.get_posting_by_id())
 
     print(result)
