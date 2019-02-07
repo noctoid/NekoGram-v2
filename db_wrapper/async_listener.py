@@ -4,6 +4,7 @@ import asyncio
 from functools import partial
 from aio_pika import connect, IncomingMessage, Exchange, Message
 from retriever import Retriever
+
 # this is the part that the program decode database access requests from
 # RabbitMQ RPC calls and translate them into actual db requests
 
