@@ -16,7 +16,7 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
 
 
         # try to parse the request, if fails send status 400 bad request
-        print(" [.] ", n, type(n))
+        print(" [.] ", n)
         try:
             req = json.loads(n)
             api_version_used = req['ver']
@@ -56,7 +56,6 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
             ),
             routing_key=message.reply_to
         )
-        print('Request complete')
 
 
 async def main(loop):

@@ -53,6 +53,7 @@ class AsyncPersistenceConnector:
         future = self.futures.pop(message.correlation_id)
         future.set_result(message.body)
 
+
     async def call(self, n):
         correlation_id = str(uuid.uuid4()).encode()
         # print(correlation_id)
