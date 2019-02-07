@@ -3,6 +3,7 @@ import json
 import asyncio
 from functools import partial
 from aio_pika import connect, IncomingMessage, Exchange, Message
+from retriever import Retriever
 # this is the part that the program decode database access requests from
 # RabbitMQ RPC calls and translate them into actual db requests
 
@@ -22,13 +23,23 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
             query            = req['query']
 
             assert api_version_used == "0.1"
-            response = {}
+            assert object_requested in ["postings", "comments", "likes"]
+            assert len(query) > 0
+
+            c = Retriever()
+            response = await c.get_posting_by_id(query)
+            response["_id"] = "ObjID"
+            print(response, type(response))
+            response = json.dumps(response)
+
         except (KeyError, AssertionError):
             print("[!] Invalid Incoming Request ", n)
             response = json.dumps({"status": 400})
+
         except:
             print("[!] Internal Error ", n)
             response = json.dumps({"status": 500})
+
         
         await exchange.publish(
             Message(

@@ -15,11 +15,12 @@ Q_PASSWORD = "qwer1234"
 
 sample_query = {
     "ver": "0.1",
-    "db": "user-content",
-    "colle": "postings",
-    "query": {
-        "key": "post-id",
-        "value": 1234567
+    "object": "postings",
+    "query" : {
+        "method": "read",
+        "payload": {
+          "posting-id": 1234567,
+        }
     }
 }
 
