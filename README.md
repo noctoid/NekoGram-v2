@@ -42,8 +42,8 @@ Sample Postings Related Requests:
 {
     "ver": "0.1",
     "object": "postings",
+    "method": "read",
     "query" : {
-        "method": "read",
         "payload": {
           "posting-id": 123456789,
           "user-id": "..."
@@ -55,8 +55,8 @@ Sample Postings Related Requests:
 {
     "ver": "0.1",
     "object": "postings",
+    "method": "delete",
     "query" : {
-        "method": "delete",
         "payload": {
           "posting-id": 123456789,
           "user-id": "..."
@@ -68,8 +68,8 @@ Sample Postings Related Requests:
 {
     "ver": "0.1",
     "object": "postings",
+    "method": "update",
     "query" : {
-        "method": "update",
         "payload": {
             "posting-id": 123456789,
             "user-id": "...",
@@ -84,8 +84,8 @@ Sample Postings Related Requests:
 {
     "ver": "0.1",
     "object": "postings",
+    "method": "create",
     "query" : {
-        "method": "create",
         "payload": {
             "posting-id": 123456789,
             "user-id": "...",
@@ -102,8 +102,8 @@ Create comment
 {
     "ver": "0.1",
     "object": "comments",
+    "method": "create",
     "query": {
-        "method": "create",
         "payload": {
             "posting-id": 123456789,
             "user-id": "...",
@@ -118,6 +118,7 @@ Delete comment
 {
     "ver": "0.1",
     "object": "comments",
+    "method": "delete",
     "query": {
         "method": "delete",
         "payload": {
@@ -135,8 +136,8 @@ Like
 {
   "ver": "0.1",
   "object": "likes",
+  "method": "create",
   "query": {
-    "method": "create",
     "payload": {
       "posting-id": 123456789,
       "user-id": "..."
@@ -149,8 +150,8 @@ Dislike
 {
   "ver": "0.1",
   "object": "likes",
+  "method": "delete",
   "query": {
-    "method": "delete",
     "payload": {
       "posting-id": 123456789,
       "user-id": "..."
