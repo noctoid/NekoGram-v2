@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 import asyncio
-from mongodb_connector import Async_Mongo_Connector
+# from mongodb_connector import Async_Mongo_Connector
 
 
 class Retriever:
-    def __init__(self):
+    def __init__(self, db):
         try:
-            self.mongo_client = Async_Mongo_Connector()
+            # self.mongo_client = Async_Mongo_Connector()
+            self.mongo_client = db
         except:
             raise ConnectionError
 

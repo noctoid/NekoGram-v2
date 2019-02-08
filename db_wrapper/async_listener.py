@@ -5,6 +5,8 @@ from functools import partial
 from aio_pika import connect, IncomingMessage, Exchange, Message
 from retriever import Retriever
 
+from mongodb_connector import Async_Mongo_Connector
+db = Async_Mongo_Connector()
 # this is the part that the program decode database access requests from
 # RabbitMQ RPC calls and translate them into actual db requests
 
@@ -29,7 +31,7 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
             assert object_requested in ["postings", "comments", "likes"]
             assert len(query) > 0
 
-            c = Retriever()
+            c = Retriever(db)
             c.load(object_requested, method_used, query)
             response = await c.get_posting_by_id()
             response["_id"] = "ObjID"
