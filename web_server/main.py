@@ -7,7 +7,8 @@ import json as j
 
 import asyncio
 
-from persistence.connector_base import AsyncPersistenceConnector
+# from connector_base import AsyncPersistenceConnector
+from logic import Logic
 
 app = Sanic()
 
@@ -19,17 +20,8 @@ async def test(request):
 
 @app.route("/p/read/")
 async def post_read(request):
-    aio_db = await AsyncPersistenceConnector(asyncio.get_event_loop()).connect()
-    result = await aio_db.call({
-        "ver": "0.1",
-        "object": "postings",
-        "method": "read",
-        "query" : {
-            "payload": {
-              "posting-id": 1234567,
-            }
-        }
-    })
+    logic = Logic()
+    result = await logic.get_postings()
 
     return json(j.loads(result))
 
