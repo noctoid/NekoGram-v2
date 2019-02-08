@@ -21,3 +21,18 @@ class Logic:
             }
         })
         return result
+
+
+    async def create_postings(self):
+        aio_db = await AsyncPersistenceConnector(asyncio.get_event_loop()).connect()
+        result = await aio_db.call({
+            "ver": "0.1",
+            "object": "postings",
+            "method": "create",
+            "query": {
+                "payload": {
+                    "posting-id": 1234568,
+                    "text": "I have pineapple"
+                }
+            }
+        })

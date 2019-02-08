@@ -25,6 +25,12 @@ async def post_read(request):
 
     return json(j.loads(result))
 
+@app.route("/p/create/")
+async def post_create(request):
+    logic = Logic()
+    result = await logic.create_postings()
+    return json(j.loads(result))
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)
