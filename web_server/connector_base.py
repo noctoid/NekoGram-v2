@@ -72,6 +72,9 @@ class AsyncPersistenceConnector:
 
         return await future
 
+    async def close(self):
+        await self.connection.close()
+
 
 async def main(loop):
     a_db_rpc = await AsyncPersistenceConnector(loop).connect()

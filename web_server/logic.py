@@ -20,6 +20,7 @@ class Logic:
                 }
             }
         })
+        await aio_db.close()
         return result
 
 
@@ -36,3 +37,5 @@ class Logic:
                 }
             }
         })
+        await aio_db.close()
+        return result

@@ -20,6 +20,13 @@ class Async_Mongo_Connector:
         doc = await self.client[db][colle].find_one({key:value})
         return doc
 
+    async def InsertByKeyValue(self, db, colle, doc):
+        status = await self.client[db][colle].insert_one({
+            "post-id": 1234568,
+            "text": "I have pineapple"
+        })
+        return
+
 if __name__ == "__main__":
     c = Async_Mongo_Connector()
     loop = asyncio.get_event_loop()
