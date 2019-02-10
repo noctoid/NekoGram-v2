@@ -19,7 +19,6 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
 
 
         # try to parse the request, if fails send status 400 bad request
-        print("[.] ", n)
         try:
             req = json.loads(n)
             api_version_used = req['ver']
@@ -32,18 +31,34 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
             assert object_requested in ["postings", "comments", "likes"]
             assert len(query) > 0
 
+            # parse query fetched from Q
+            # get data as desired object
             odc = OD_Converter(
                 db,
-                object_requested=object_requested,
+                obj_requested=object_requested,
                 method=method_used,
                 query=query
             )
             response = await odc.do()
 
-            if "_id" in response:
+            if response != None and  "_id" in response:
                 response["_id"] = "ObjID"
+                response["status"] = "done"
+                response = json.dumps(response)
             # print(response, type(response))
-            response = json.dumps(response)
+            if response is None:
+                response = json.dumps({"status": "not found"})
+
+            # return the object requested found in db back to the RPC
+            await exchange.publish(
+                Message(
+                    body=response.encode(),
+                    correlation_id=message.correlation_id
+                ),
+                routing_key=message.reply_to
+            )
+
+            print("[.] ", n)
 
         except (KeyError, AssertionError):
             pprint("[!] Invalid Incoming Request ", n)
@@ -56,15 +71,6 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
         # except:
         #     pprint("[!] Internal Error ", n)
         #     response = json.dumps({"status": 500})
-
-        
-        await exchange.publish(
-            Message(
-                body=response.encode(),
-                correlation_id=message.correlation_id
-            ),
-            routing_key=message.reply_to
-        )
 
 
 async def main(loop):

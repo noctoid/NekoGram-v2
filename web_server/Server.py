@@ -18,10 +18,16 @@ async def test(request):
     return json({"Neko": "Gram!"})
 
 
-@app.route("/p/read/")
+@app.route("/p/read/", methods=['POST'])
 async def p_read(request):
+    form = request.form
     logic = RequestHandler()
-    result = await logic.get_postings()
+    try:
+        result = await logic.get_postings(
+            str(form['key'][0]),
+            int(form['value'][0]))
+    except ValueError:
+        return json({"status": "bad request"}, status=400)
 
     return json(j.loads(result))
 
@@ -47,7 +53,7 @@ async def c_create(request):
 async def c_read(request):
     return json({"body": "sooooooooon"}, status=501)
 
-@app.route("/c/update/"):
+@app.route("/c/update/")
 async def c_update(request):
     return json({"body": "sooooooooon"}, status=501)
 

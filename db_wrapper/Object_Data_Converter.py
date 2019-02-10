@@ -36,6 +36,10 @@ class OD_Converter:
                 return await self.get_postings()
             elif self.method == "create":
                 return await self.create_postings()
+            elif self.method == "update":
+                return await self.update_postings()
+            elif self.method == "delete":
+                return await self.delete_postings()
         elif self.obj == "comments":
             pass
         elif self.obj == "likes":
@@ -45,7 +49,7 @@ class OD_Converter:
     async def get_postings(self):
         result = await self.mongo_client.findByKeyValue(
             "user-content", "postings",
-            "post-id", self.query["payload"]["post-id"]
+            self.query["key"], self.query["value"]
         )
         return result
 
@@ -60,7 +64,7 @@ class OD_Converter:
 
 
 if __name__ == "__main__":
-    c = Retriever()
+    c = OD_Converter()
     loop = asyncio.get_event_loop()
     c.load("postings", "read", {
         "payload": {
