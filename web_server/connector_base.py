@@ -1,28 +1,11 @@
 #!/usr/bin/python3.7
-# import pika
 import uuid
 import json
 
 import asyncio
 from aio_pika import connect, IncomingMessage, Message
 
-# from settings import Q_SERVER, Q_USERNAME, Q_PASSWORD
-
-Q_SERVER = "192.168.0.31"
-Q_USERNAME = "nekogram"
-Q_PASSWORD = "qwer1234"
-
-
-sample_query = {
-    "ver": "0.1",
-    "object": "postings",
-    "method": "read",
-    "query" : {
-        "payload": {
-          "posting-id": 1234567,
-        }
-    }
-}
+from settings import *
 
 
 class AsyncPersistenceConnector:
@@ -77,6 +60,17 @@ class AsyncPersistenceConnector:
 
 
 async def main(loop):
+    sample_query = {
+        "ver": "0.1",
+        "object": "postings",
+        "method": "read",
+        "query": {
+            "payload": {
+                "posting-id": 1234567,
+            }
+        }
+    }
+
     a_db_rpc = await AsyncPersistenceConnector(loop).connect()
     # print(" [x] Requesting sample query async")
     response = await a_db_rpc.call(sample_query)

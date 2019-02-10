@@ -1,7 +1,7 @@
 #!/usr/bin/python3.7
 import asyncio
 from connector_base import AsyncPersistenceConnector
-
+from settings import Q_API_VER
 
 class Logic:
     def __init__(self):
@@ -16,7 +16,7 @@ class Logic:
             "method": "read",
             "query": {
                 "payload": {
-                    "posting-id": 1234567,
+                    "post-id": 1234567,
                 }
             }
         })
@@ -32,7 +32,8 @@ class Logic:
             "method": "create",
             "query": {
                 "payload": {
-                    "posting-id": 1234568,
+                    "post-id": 1234568,
+                    "user-id": 1234567,
                     "text": "I have pineapple"
                 }
             }

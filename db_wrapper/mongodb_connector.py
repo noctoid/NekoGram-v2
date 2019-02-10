@@ -23,9 +23,10 @@ class Async_Mongo_Connector:
     async def InsertByKeyValue(self, db, colle, doc):
         status = await self.client[db][colle].insert_one({
             "post-id": 1234568,
+            "user-id": 1234567,
             "text": "I have pineapple"
         })
-        return
+        return status
 
 if __name__ == "__main__":
     c = Async_Mongo_Connector()

@@ -4,6 +4,7 @@ import asyncio
 from functools import partial
 from aio_pika import connect, IncomingMessage, Exchange, Message
 from retriever import Retriever
+from pprint import pprint
 
 from mongodb_connector import Async_Mongo_Connector
 db = Async_Mongo_Connector()
@@ -18,7 +19,7 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
 
 
         # try to parse the request, if fails send status 400 bad request
-        print(" [.] ", n)
+        print("[.] ", n)
         try:
             req = json.loads(n)
             api_version_used = req['ver']
@@ -33,21 +34,22 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
 
             c = Retriever(db)
             c.load(object_requested, method_used, query)
-            response = await c.get_posting_by_id()
-            response["_id"] = "ObjID"
-            print(response, type(response))
+            response = await c.do()
+            if "_id" in response:
+                response["_id"] = "ObjID"
+            # print(response, type(response))
             response = json.dumps(response)
 
         except (KeyError, AssertionError):
-            print("[!] Invalid Incoming Request ", n)
+            pprint("[!] Invalid Incoming Request ", n)
             response = json.dumps({"status": 400})
 
         except ConnectionError:
-            print("[!] Failed to Connect Database ", n)
+            pprint("[!] Failed to Connect Database ", n)
             response = json.dumps({"status": 500})
 
         # except:
-        #     print("[!] Internal Error ", n)
+        #     pprint("[!] Internal Error ", n)
         #     response = json.dumps({"status": 500})
 
         
@@ -91,5 +93,5 @@ if __name__ == "__main__":
 
     # we enter a never-ending loop that waits for data
     # and runs callbacks whenever necessary.
-    print(" [x] Awaiting RPC requests")
+    print("[x] Awaiting RPC requests")
     loop.run_forever()
