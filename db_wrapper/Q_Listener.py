@@ -41,8 +41,9 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
             )
             response = await odc.do()
 
-            if response != None and  "_id" in response:
-                response["_id"] = "ObjID"
+            if response != None:
+                if "_id" in response:
+                    response["_id"] = "ObjID"
                 response["status"] = "done"
                 response = json.dumps(response)
             # print(response, type(response))

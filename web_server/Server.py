@@ -31,10 +31,19 @@ async def p_read(request):
 
     return json(j.loads(result))
 
-@app.route("/p/create/")
+@app.route("/p/create/", methods=['POST'])
 async def p_create(request):
     logic = RequestHandler()
-    result = await logic.create_postings()
+    try:
+        form = request.form
+        result = await logic.create_postings(
+            str(form["uid"][0]),
+            str(form["txt"][0]),
+            str(form["mime"][0]),
+            str(form["media_url"][0])
+        )
+    except (ValueError, IndexError, KeyError):
+        return json({"status": "bad request"}, status=400)
     return json(j.loads(result))
 
 @app.route("/p/update")

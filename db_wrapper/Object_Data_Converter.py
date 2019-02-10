@@ -56,9 +56,8 @@ class OD_Converter:
 
     # All write methods
     async def create_postings(self):
-        payload = self.query['payload']
         result = await self.mongo_client.InsertByKeyValue(
-            "user-content", "postings", {}
+            "user-content", "postings", self.query
         )
         return {"status": 200}
 
