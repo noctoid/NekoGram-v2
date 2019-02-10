@@ -3,10 +3,10 @@ import json
 import asyncio
 from functools import partial
 from aio_pika import connect, IncomingMessage, Exchange, Message
-from retriever import Retriever
+from Object_Data_Converter import OD_Converter
 from pprint import pprint
 
-from mongodb_connector import Async_Mongo_Connector
+from MongoDB_Connector import Async_Mongo_Connector
 db = Async_Mongo_Connector()
 # this is the part that the program decode database access requests from
 # RabbitMQ RPC calls and translate them into actual db requests
@@ -32,9 +32,14 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
             assert object_requested in ["postings", "comments", "likes"]
             assert len(query) > 0
 
-            c = Retriever(db)
-            c.load(object_requested, method_used, query)
-            response = await c.do()
+            odc = OD_Converter(
+                db,
+                object_requested=object_requested,
+                method=method_used,
+                query=query
+            )
+            response = await odc.do()
+
             if "_id" in response:
                 response["_id"] = "ObjID"
             # print(response, type(response))

@@ -1,31 +1,47 @@
 #!/usr/bin/python3
 import asyncio
+
+
 # from mongodb_connector import Async_Mongo_Connector
 
 
-class Retriever:
-    def __init__(self, db):
+class OD_Converter:
+    def __init__(self, db, obj_requested=None, method=None, query=None):
         try:
             # self.mongo_client = Async_Mongo_Connector()
             self.mongo_client = db
-            self.obj = None
-            self.method = None
-            self.query = None
+            self.obj = obj_requested
+            self.method = method
+            self.query = query
         except:
             raise ConnectionError
 
     def load(self, obj, method, query):
+        """
+        :param obj:     "postings", "comments", "likes"
+        :param method:  "read", "delete", "update", "create"
+        :param query:   depend on query
+        :return:
+        """
         self.obj = obj
         self.method = method
         self.query = query
 
     async def do(self):
-        if self.method == "read":
-            return await self.get_postings()
-        elif self.method == "create":
-            return await self.create_postings()
+        """
+        :return:
+        """
+        if self.obj == "postings":
+            if self.method == "read":
+                return await self.get_postings()
+            elif self.method == "create":
+                return await self.create_postings()
+        elif self.obj == "comments":
+            pass
+        elif self.obj == "likes":
+            pass
 
-
+    # All read methods
     async def get_postings(self):
         result = await self.mongo_client.findByKeyValue(
             "user-content", "postings",
@@ -33,12 +49,15 @@ class Retriever:
         )
         return result
 
+
+    # All write methods
     async def create_postings(self):
         payload = self.query['payload']
         result = await self.mongo_client.InsertByKeyValue(
             "user-content", "postings", {}
         )
         return {"status": 200}
+
 
 if __name__ == "__main__":
     c = Retriever()
