@@ -3,7 +3,7 @@ import asyncio
 from connector_base import AsyncPersistenceConnector
 from settings import Q_API_VER
 
-class Logic:
+class RequestHandler:
     def __init__(self):
         pass
 
