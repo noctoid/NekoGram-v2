@@ -11,6 +11,7 @@ import asyncio
 from Request_Handler import RequestHandler
 
 app = Sanic()
+logic = RequestHandler()
 
 
 @app.route("/")
@@ -21,19 +22,19 @@ async def test(request):
 @app.route("/p/read/", methods=['POST'])
 async def p_read(request):
     form = request.form
-    logic = RequestHandler()
+    # logic = RequestHandler()
     try:
         result = await logic.get_postings(
             str(form['key'][0]),
             str(form['value'][0]))
-    except ValueError:
+    except (ValueError, IndexError, KeyError):
         return json({"status": "bad request"}, status=400)
 
     return json(j.loads(result))
 
 @app.route("/p/create/", methods=['POST'])
 async def p_create(request):
-    logic = RequestHandler()
+    # logic = RequestHandler()
     try:
         form = request.form
         result = await logic.create_postings(

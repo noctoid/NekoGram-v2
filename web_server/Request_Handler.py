@@ -20,10 +20,14 @@ class RequestHandler:
             "media-mime": "",
             "media-url": [""]
         }
+        self.ODM = None
+
+    async def _initialize(self, loop):
+        self.ODM = await AsyncPersistenceConnector(loop).connect()
 
 
     async def get_postings(self, key, value):
-        aio_db = await AsyncPersistenceConnector(asyncio.get_event_loop()).connect()
+        # aio_db = await AsyncPersistenceConnector(asyncio.get_event_loop()).connect()
         query = self.sample_query
         query["object"] = "postings"
         query["method"] = "read"
@@ -31,8 +35,12 @@ class RequestHandler:
             "key": key,
             "value": value
         }
-        result = await aio_db.call(query)
-        await aio_db.close()
+        # result = await aio_db.call(query)
+        # await aio_db.close()
+        if not self.ODM:
+            await self._initialize(asyncio.get_event_loop())
+        result = await self.ODM.call(query)
+
         return result
 
 
@@ -49,6 +57,10 @@ class RequestHandler:
         query["object"] = "postings"
         query["method"] = "create"
         query["query"] = doc
-        result = await aio_db.call(query)
-        await aio_db.close()
+        # result = await aio_db.call(query)
+        # await aio_db.close()
+        if not self.ODM:
+            await self._initialize(asyncio.get_event_loop())
+        result = await self.ODM.call(query)
+
         return result
