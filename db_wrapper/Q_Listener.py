@@ -87,7 +87,7 @@ async def main(loop):
     #     login="nekogram",
     #     password="qwer1234",
     # )
-    await logger._connect(loop)
+    await logger.connect(loop)
     connection = await connect("amqp://guest:guest@127.0.0.1/", loop=loop)
 
     # Creating a channel
