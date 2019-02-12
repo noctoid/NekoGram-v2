@@ -25,7 +25,7 @@ async def p_read(request):
     try:
         result = await logic.get_postings(
             str(form['key'][0]),
-            int(form['value'][0]))
+            str(form['value'][0]))
     except ValueError:
         return json({"status": "bad request"}, status=400)
 

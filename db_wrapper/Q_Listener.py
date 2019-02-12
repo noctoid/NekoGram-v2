@@ -5,8 +5,11 @@ from functools import partial
 from aio_pika import connect, IncomingMessage, Exchange, Message
 from Object_Data_Converter import OD_Converter
 from pprint import pprint
-
+from NekoLogger.Emitter import Emitter
 from MongoDB_Connector import Async_Mongo_Connector
+
+logger = Emitter()
+
 db = Async_Mongo_Connector()
 # this is the part that the program decode database access requests from
 # RabbitMQ RPC calls and translate them into actual db requests
@@ -60,14 +63,17 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
             )
 
             print("[.] ", n)
+            await logger.emit(n)
 
         except (KeyError, AssertionError):
             pprint("[!] Invalid Incoming Request ", n)
+            await logger.emit(n)
             response = json.dumps({"status": 400})
 
         except ConnectionError:
             pprint("[!] Failed to Connect Database ", n)
             response = json.dumps({"status": 500})
+            await logger.emit(n)
 
         # except:
         #     pprint("[!] Internal Error ", n)
@@ -81,6 +87,7 @@ async def main(loop):
     #     login="nekogram",
     #     password="qwer1234",
     # )
+    await logger._connect(loop)
     connection = await connect("amqp://guest:guest@127.0.0.1/", loop=loop)
 
     # Creating a channel
