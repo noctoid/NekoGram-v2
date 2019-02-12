@@ -47,37 +47,36 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
             if response != None:
                 if "_id" in response:
                     response["_id"] = "ObjID"
+                n = "[.] done " + n
                 response["status"] = "done"
                 response = json.dumps(response)
             # print(response, type(response))
             if response is None:
+                n = "[!] Not Found "+n
                 response = json.dumps({"status": "not found"})
 
-            # return the object requested found in db back to the RPC
-            await exchange.publish(
-                Message(
-                    body=response.encode(),
-                    correlation_id=message.correlation_id
-                ),
-                routing_key=message.reply_to
-            )
-
-            print("[.] ", n)
-            await logger.emit(n)
-
         except (KeyError, AssertionError):
-            pprint("[!] Invalid Incoming Request ", n)
-            await logger.emit(n)
+            n = "[!] Invalid Incoming Request "+ n
             response = json.dumps({"status": 400})
 
         except ConnectionError:
-            pprint("[!] Failed to Connect Database ", n)
+            n = "[!] Failed to Connect Database "+ n
             response = json.dumps({"status": 500})
-            await logger.emit(n)
 
         # except:
         #     pprint("[!] Internal Error ", n)
         #     response = json.dumps({"status": 500})
+
+        # return the object requested found in db back to the RPC
+        await exchange.publish(
+            Message(
+                body=response.encode(),
+                correlation_id=message.correlation_id
+            ),
+            routing_key=message.reply_to
+        )
+        # log
+        await logger.emit(n, tee=True)
 
 
 async def main(loop):
