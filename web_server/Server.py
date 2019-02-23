@@ -21,15 +21,24 @@ async def test(request):
 
 @app.route("/p/read/", methods=['POST'])
 async def p_read(request):
-    form = request.form
-    # logic = RequestHandler()
+    # form = request.form
+    print(request.json)
+    # try:
+    #     result = await logic.get_postings(
+    #         str(form['key'][0]),
+    #         str(form['value'][0]))
+    # except (ValueError, IndexError, KeyError):
+    #     return json({"status": "bad request"}, status=400)
+
+    form = request.json
     try:
         result = await logic.get_postings(
-            str(form['key'][0]),
-            str(form['value'][0]))
+            str(form['key']),
+            str(form['value']))
     except (ValueError, IndexError, KeyError):
         return json({"status": "bad request"}, status=400)
 
+    print(result)
     return json(j.loads(result))
 
 @app.route("/p/create/", methods=['POST'])
