@@ -64,6 +64,10 @@ async def p_update(request):
 async def p_delete(request):
     return json({"body": "sooooooooon"}, status=501)
 
+@app.route("/p/search/", methods=['OPTIONS', 'POST'])
+async def p_search(request):
+    return json({"body": "soooooooooon"}, status=200)
+
 @app.route("/c/create/")
 async def c_create(request):
     return json({"body": "sooooooooon"}, status=501)
@@ -88,7 +92,17 @@ async def l_do(request):
 async def l_undo(request):
     return json({"body": "sooooooooon"}, status=501)
 
+@app.route("/u/create/", methods=['OPTIONS', 'POST'])
+async def u_create(request):
+    return json({"body": "sooon"}, status=200)
 
+@app.route("/u/read_info/", methods=['OPTIONS', 'POST'])
+async def u_read_info(request):
+    return json({"body": "soon"}, status=200)
+
+@app.route("/u/update/", methods=['OPTIONS', 'POST'])
+async def u_update(request):
+    return json({"body": "sooon"}, status=200)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)
