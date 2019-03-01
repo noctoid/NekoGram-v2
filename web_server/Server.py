@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from sanic import Sanic
+from sanic_cors import CORS, cross_origin
 from sanic.response import json
 
 import json as j
@@ -11,6 +12,7 @@ import asyncio
 from Request_Handler import RequestHandler
 
 app = Sanic()
+CORS(app)
 logic = RequestHandler()
 
 
@@ -19,10 +21,10 @@ async def test(request):
     return json({"Neko": "Gram!"})
 
 
-@app.route("/p/read/", methods=['POST'])
+@app.route("/p/read/", methods=['POST', 'OPTIONS'])
 async def p_read(request):
     # form = request.form
-    print(request.json)
+    print(request)
     # try:
     #     result = await logic.get_postings(
     #         str(form['key'][0]),
