@@ -72,18 +72,12 @@ async def test(request):
 async def p_read(request):
     # form = request.form
     print(request)
-    # try:
-    #     result = await logic.get_postings(
-    #         str(form['key'][0]),
-    #         str(form['value'][0]))
-    # except (ValueError, IndexError, KeyError):
-    #     return json({"status": "bad request"}, status=400)
 
-    form = request.json
+    query = request.json
     try:
         result = await logic.get_postings(
-            str(form['key']),
-            str(form['value']))
+            str(query['key']),
+            str(query['value']))
     except (ValueError, IndexError, KeyError):
         return json({"status": "bad request"}, status=400)
 
@@ -96,14 +90,14 @@ async def p_create(request):
     # logic = RequestHandler()
     print(request)
     try:
-        form = request.json
+        query = request.json
 
         result = await logic.create_postings_2(
             Posting(
-                uid=str(form['uid']),
-                txt=str(form['txt']),
-                mime=str(form['mime']),
-                media_url=str(form['media_url'])
+                uid=str(query['uid']),
+                txt=str(query['txt']),
+                mime=str(query['mime']),
+                media_url=str(query['media_url'])
             )
         )
     except (ValueError, IndexError, KeyError):
