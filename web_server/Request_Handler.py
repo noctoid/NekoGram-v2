@@ -50,7 +50,7 @@ class RequestHandler:
             "pid": str(uuid4()),
             "txt": txt,
             "mime": mime,
-            "media-url": media_url
+            "media_url": media_url
         }
         aio_db = await AsyncPersistenceConnector(asyncio.get_event_loop()).connect()
         query = self.sample_query

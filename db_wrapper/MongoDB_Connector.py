@@ -10,7 +10,8 @@ class Async_Mongo_Connector:
         self.login = login
         self.password = password
 
-        self.client = motor_asyncio.AsyncIOMotorClient()
+        self.client = motor_asyncio.AsyncIOMotorClient(self.ip)
+        print(self.client)
 
     async def mockup(self):
         return {"test": "result", "success": 233}
@@ -28,5 +29,5 @@ if __name__ == "__main__":
     c = Async_Mongo_Connector()
     loop = asyncio.get_event_loop()
     # loop.run_until_complete(c.mockup)
-    result = loop.run_until_complete(c.findByKeyValue("user-content","postings", "post-id", 1234567))
+    result = loop.run_until_complete(c.findByKeyValue("user_content","postings", "post-id", 1234567))
     pprint(result)

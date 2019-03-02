@@ -48,7 +48,7 @@ class OD_Converter:
     # All read methods
     async def get_postings(self):
         result = await self.mongo_client.findByKeyValue(
-            "user-content", "postings",
+            "user_content", "postings",
             self.query["key"], self.query["value"]
         )
         return result
@@ -57,7 +57,7 @@ class OD_Converter:
     # All write methods
     async def create_postings(self):
         result = await self.mongo_client.InsertByKeyValue(
-            "user-content", "postings", self.query
+            "user_content", "postings", self.query
         )
         return {"status": 200}
 

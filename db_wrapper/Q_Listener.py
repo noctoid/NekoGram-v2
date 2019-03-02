@@ -10,7 +10,7 @@ from MongoDB_Connector import Async_Mongo_Connector
 
 logger = Emitter()
 
-db = Async_Mongo_Connector()
+db = Async_Mongo_Connector(ip="10.0.1.235")
 # this is the part that the program decode database access requests from
 # RabbitMQ RPC calls and translate them into actual db requests
 
