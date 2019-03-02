@@ -2,6 +2,7 @@
 import asyncio
 from uuid import uuid4
 from Q_Connector import AsyncPersistenceConnector
+from Models import Posting
 from settings import Q_API_VER
 
 class RequestHandler:
@@ -52,7 +53,7 @@ class RequestHandler:
             "mime": mime,
             "media_url": media_url
         }
-        aio_db = await AsyncPersistenceConnector(asyncio.get_event_loop()).connect()
+        # aio_db = await AsyncPersistenceConnector(asyncio.get_event_loop()).connect()
         query = self.sample_query
         query["object"] = "postings"
         query["method"] = "create"
@@ -63,4 +64,14 @@ class RequestHandler:
             await self._initialize(asyncio.get_event_loop())
         result = await self.ODM.call(query)
 
+        return result
+
+    async def create_postings_2(self, P:Posting):
+        query = self.sample_query
+        query["object"] = "postings"
+        query["method"] = "create"
+        query["query"] = P.to_dict()
+        if not self.ODM:
+            await self._initialize(asyncio.get_event_loop())
+        result = await self.ODM.call(query)
         return result

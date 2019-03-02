@@ -13,6 +13,7 @@ import asyncio
 
 # from connector_base import AsyncPersistenceConnector
 from Request_Handler import RequestHandler
+from Models import Posting
 
 
 class User:
@@ -89,16 +90,21 @@ async def p_read(request):
     print(result)
     return json(j.loads(result))
 
-@app.route("/p/create/", methods=['POST'])
+@app.route("/p/create/", methods=['POST', 'OPTIONS'])
+@protected()
 async def p_create(request):
     # logic = RequestHandler()
+    print(request)
     try:
-        form = request.form
-        result = await logic.create_postings(
-            str(form["uid"][0]),
-            str(form["txt"][0]),
-            str(form["mime"][0]),
-            str(form["media_url"][0])
+        form = request.json
+
+        result = await logic.create_postings_2(
+            Posting(
+                uid=str(form['uid']),
+                txt=str(form['txt']),
+                mime=str(form['mime']),
+                media_url=str(form['media_url'])
+            )
         )
     except (ValueError, IndexError, KeyError):
         return json({"status": "bad request"}, status=400)
