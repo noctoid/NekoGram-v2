@@ -31,7 +31,7 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
 
             assert api_version_used == "0.1"
             assert method_used in ['read', 'delete', 'update', 'create']
-            assert object_requested in ["postings", "comments", "likes"]
+            assert object_requested in ["postings", "comments", "likes", "profiles"]
             assert len(query) > 0
 
             # parse query fetched from Q

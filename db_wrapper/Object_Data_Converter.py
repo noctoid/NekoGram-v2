@@ -44,6 +44,9 @@ class OD_Converter:
             pass
         elif self.obj == "likes":
             pass
+        elif self.obj == "profiles":
+            if self.method == "create":
+                return await self.create_user()
 
     # All read methods
     async def get_postings(self):
@@ -58,6 +61,12 @@ class OD_Converter:
     async def create_postings(self):
         result = await self.mongo_client.InsertByKeyValue(
             "user_content", "postings", self.query
+        )
+        return {"status": 200}
+
+    async def create_user(self):
+        result = await self.mongo_client.InsertByKeyValue(
+            "user_content", "profiles", self.query
         )
         return {"status": 200}
 

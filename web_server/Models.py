@@ -2,13 +2,25 @@ from uuid import uuid4
 import json
 
 class User:
-    def __init__(self, username="", password="", permission=""):
-        self.username = username
+    def __init__(self, uid="", password="", nickname="", profile_image=None):
+        self.uid = uid
+        if not uid:
+            self.uid = str(uuid4())
         self.password = password
-        self.permission = permission
+        self.nickname = nickname
 
     def __repr__(self):
-        return "NekoGram User: "+self.username+self.permission
+        return "NekoGram User: "+self.uid+self.nickname
+
+    def to_dict(self):
+        return {
+            "uid": self.uid,
+            "password": self.password,
+            "nickname": self.nickname
+        }
+
+    def json(self):
+        return json.dumps(self.to_dict())
 
     def isValid(self, api):
         pass

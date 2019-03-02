@@ -13,10 +13,10 @@ import asyncio
 
 # from connector_base import AsyncPersistenceConnector
 from Request_Handler import RequestHandler
-from Models import Posting
+from Models import Posting, User
 
 
-class User:
+class User1:
 
     def __init__(self, id, username, password):
         self.user_id = id
@@ -30,7 +30,7 @@ class User:
         return {"user_id": self.user_id, "username": self.username}
 
 
-users = [User(1, "user1", "abcxyz"), User(2, "user2", "abcxyz")]
+users = [User1(1, "user1", "abcxyz"), User1(2, "user2", "abcxyz")]
 
 username_table = {u.username: u for u in users}
 userid_table = {u.user_id: u for u in users}
@@ -142,7 +142,19 @@ async def l_undo(request):
 
 @app.route("/u/create/", methods=['OPTIONS', 'POST'])
 async def u_create(request):
-    return json({"body": "sooon"}, status=200)
+    print(request)
+    try:
+        query = request.json
+
+        result = await logic.create_user(
+            User(
+                nickname=str(query['nickname']),
+                password=str(query['password'])
+            )
+        )
+    except (ValueError, IndexError, KeyError):
+        return json({"status": "bad request"}, status=400)
+    return json(j.loads(result))
 
 @app.route("/u/read_info/", methods=['OPTIONS', 'POST'])
 async def u_read_info(request):

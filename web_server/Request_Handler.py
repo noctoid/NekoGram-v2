@@ -2,7 +2,7 @@
 import asyncio
 from uuid import uuid4
 from Q_Connector import AsyncPersistenceConnector
-from Models import Posting
+from Models import Posting, User
 from settings import Q_API_VER
 
 class RequestHandler:
@@ -71,6 +71,16 @@ class RequestHandler:
         query["object"] = "postings"
         query["method"] = "create"
         query["query"] = P.to_dict()
+        if not self.ODM:
+            await self._initialize(asyncio.get_event_loop())
+        result = await self.ODM.call(query)
+        return result
+
+    async def create_user(self, U:User):
+        query = self.sample_query
+        query['object'] = 'profiles'
+        query['method'] = 'create'
+        query['query'] = U.to_dict()
         if not self.ODM:
             await self._initialize(asyncio.get_event_loop())
         result = await self.ODM.call(query)
