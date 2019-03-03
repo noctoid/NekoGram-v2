@@ -162,3 +162,95 @@ Dislike
 
 Data retrieved will be in form of certain object also packed in json.
 
+
+## Information Experts
+
+All the data models are described in this session, and they are ```User, Posting, Like, Comment, Notification```.
+
+#### User
+
+```json
+{
+  "uid": "uuid4",
+  "email": "schrodinger@example.com",
+  "phone": "+11234567890",
+  "password": "hash_of_the_password",
+  "nickname": "DisplayName",
+  "profile_image": "https://cdn.example.com/img/1234567.png",
+  "postings": [
+    "pid-1", "pid-2", "..."
+  ],
+  "notification": [
+    {
+      "nid": "1234",
+      "etc": "..."
+    }, {}
+  ]
+  
+}
+
+```
+
+#### Posting
+There are 4 types of postings which are differentiated by ```type``` attribute; and they are 
+```posting```, ```like```, ```comment```, ```repost``` which have different content.
+```json
+// Meta Posting
+{
+  "pid": "uuid4-0000-0000-0000-00000000",
+  "uid": "uuid4-9999-1234-5678-12345678",
+  "type": "posting", // or "like", "comment", "repost"
+  "content": {...}   // actual content
+  "comments": [ // list of pid
+    "uuid4-0000-0000-0000-00000001",
+    "..."
+   ],
+   "likes": [ // list of pid
+    "uuid4-0000-0000-0000-00000004",
+    "..."
+   ],
+   "repost": [
+    "uuid4-0000-0000-0000-00000007",
+    "..."
+   ],
+   "scope": "public" // or "friend", or "self"
+}
+```
+Posting Content:
+Posting Content contains text and media
+```json
+{
+  "txt": "I had In n Out for lunch today and it is good.",
+  "hasMedia": true,
+  "mimeType": "image/png",
+  "mediaUrl": "https://cdn.example.com/img/a-nice-burger.png",
+  
+}
+```
+
+Likes Content: 
+Likes has no real content, but the ```pid``` of the posting it likes.
+```json
+{
+  "target_pid": "uuid4-0000-1111-2222-00000000"
+}
+```
+
+Repost Content:
+Repost has a quote (may be empty) and the ```pid``` of the posting
+```json
+{
+  "target_pid": "uuid4-0000-1111-2222-00000000",
+  "txt": "Nice Post!"
+}
+```
+
+Comment Content:
+Repost has a quote (cannot be empty) and the ```pid``` of the posting
+```json
+{
+  "target_pid": "uuid4-0000-1111-2222-00000000",
+  "txt": "Good job!"
+}
+```
+
