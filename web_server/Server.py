@@ -156,9 +156,18 @@ async def u_create(request):
         return json({"status": "bad request"}, status=400)
     return json(j.loads(result))
 
-@app.route("/u/read_info/", methods=['OPTIONS', 'POST'])
+@app.route("/u/read/", methods=['OPTIONS', 'POST'])
+@protected()
 async def u_read_info(request):
-    return json({"body": "soon"}, status=200)
+    try:
+        query = request.json
+        print(query)
+        result = await logic.get_user(
+            query['login']
+        )
+    except (ValueError, IndexError, KeyError):
+        return json({"status": "bad request"}, status=400)
+    return json(j.loads(result))
 
 @app.route("/u/update/", methods=['OPTIONS', 'POST'])
 async def u_update(request):

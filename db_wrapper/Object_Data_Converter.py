@@ -47,6 +47,8 @@ class OD_Converter:
         elif self.obj == "profiles":
             if self.method == "create":
                 return await self.create_user()
+            elif self.method == "read":
+                return await self.get_user()
 
     # All read methods
     async def get_postings(self):
@@ -69,6 +71,12 @@ class OD_Converter:
             "user_content", "profiles", self.query
         )
         return {"status": 200}
+
+    async def get_user(self):
+        result = await self.mongo_client.findByKeyValue(
+            "user_content", "profiles", self.query['key'], self.query['value']
+        )
+        return result
 
 
 if __name__ == "__main__":
