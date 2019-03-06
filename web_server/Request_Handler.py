@@ -86,11 +86,11 @@ class RequestHandler:
         result = await self.ODM.call(query)
         return result
 
-    async def get_user(self, login):
+    async def get_user(self, username):
         query = self.sample_query
         query["object"] = "profiles"
         query["method"] = "read"
-        query["query"] = {"key": "nickname", "value": login} #nickname for now change later
+        query["query"] = {"key": "username", "value": username} #nickname for now change later
         if not self.ODM:
             await self._initialize(asyncio.get_event_loop())
         result = await self.ODM.call(query)

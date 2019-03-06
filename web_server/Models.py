@@ -11,7 +11,7 @@ class User:
         self.displayName = displayName
 
     def __repr__(self):
-        return "NekoGram User: "+self.uid+self.nickname
+        return "NekoGram User: "+self.uid+self.displayName+self.username
 
     def to_dict(self):
         return {

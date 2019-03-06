@@ -163,7 +163,7 @@ async def l_undo(request):
 
 @app.route("/u/create/", methods=['OPTIONS', 'POST'])
 async def u_create(request):
-    print(request)
+    print(request.json)
     try:
         query = request.json
 

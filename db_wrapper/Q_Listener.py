@@ -59,9 +59,9 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
                 n = "[!] Not Found "+n
                 response = json.dumps({"status": "not found"})
 
-        except (KeyError, AssertionError):
-            n = "[!] Invalid Incoming Request "+ n
-            response = json.dumps({"status": 400})
+        # except (KeyError, AssertionError):
+        #     n = "[!] Invalid Incoming Request "+ n
+        #     response = json.dumps({"status": 400})
 
         except ConnectionError:
             n = "[!] Failed to Connect Database "+ n

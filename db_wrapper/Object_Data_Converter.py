@@ -67,6 +67,11 @@ class OD_Converter:
         return {"status": 200}
 
     async def create_user(self):
+        isUserExist = await self.mongo_client.findByKeyValue(
+            "user_content", "profiles", "username", self.query["username"]
+        )
+        if isUserExist:
+            return {"status": 403, "message": "username taken"}
         result = await self.mongo_client.InsertByKeyValue(
             "user_content", "profiles", self.query
         )
