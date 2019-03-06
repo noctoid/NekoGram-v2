@@ -42,6 +42,17 @@ if __name__ == "__main__":
                 "value": "2128cbf7-2284-48a6-8fac-69e9b4bccc95"
             }
         },
+        {
+            "url": "http://127.0.0.1:8000/u/create/",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "data": {
+                "username": "noctoid",
+                "password": "qwer1234",
+                "displayName": "Noctoid"
+            }
+        }
     ]
 
     answers = [
@@ -62,10 +73,12 @@ if __name__ == "__main__":
                     'pid': '2128cbf7-2284-48a6-8fac-69e9b4bccc95',
                     'uid': '1234567',
                     'valid': True},
-         'status': 'done'}
+         'status': 'done'},
+        {}
 
     ]
 
 
     for t,a in zip(tests, answers):
+        pprint.pprint(json.loads(post(t["url"], t['headers'], t['data'])))
         assert json.loads(post(t["url"], t['headers'], t['data'])) == a

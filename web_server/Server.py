@@ -15,6 +15,27 @@ import asyncio
 from Request_Handler import RequestHandler
 from Models import Posting, User
 
+## attempt to make getting post data smarter
+# schema = {
+#     "p.read": {
+#         "key": "str",
+#         "value": "str",
+#         "required": ["key", "value"]
+#     },
+#     "p.create": {
+#         "required": ["uid", ],
+#         "uid": "str",
+#         "pid": "str",
+#         "type": "str",
+#         "content": "obj",
+#     }
+# }
+#
+# def digPost(request, schema={}):
+#     if not schema:
+#         print("Schema provided is empty, nothing to be done.")
+
+
 
 class User1:
 
@@ -148,8 +169,9 @@ async def u_create(request):
 
         result = await logic.create_user(
             User(
-                nickname=str(query['nickname']),
-                password=str(query['password'])
+                username=str(query['username']),
+                password=str(query['password']),
+                displayName=str(query['displayName'])
             )
         )
     except (ValueError, IndexError, KeyError):
@@ -163,7 +185,7 @@ async def u_read_info(request):
         query = request.json
         print(query)
         result = await logic.get_user(
-            query['login']
+            query['username']
         )
     except (ValueError, IndexError, KeyError):
         return json({"status": "bad request"}, status=400)

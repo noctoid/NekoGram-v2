@@ -175,7 +175,8 @@ All the data models are described in this session, and they are ```User, Posting
   "email": "schrodinger@example.com",
   "phone": "+11234567890",
   "password": "hash_of_the_password",
-  "nickname": "DisplayName",
+  "username": "username",
+  "displayName": "Display Name",
   "profile_image": "https://cdn.example.com/img/1234567.png",
   "postings": [
     "pid-1", "pid-2", "..."
