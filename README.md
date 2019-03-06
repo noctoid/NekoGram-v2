@@ -214,7 +214,7 @@ There are 4 types of postings which are differentiated by ```type``` attribute; 
     "uuid4-0000-0000-0000-00000007",
     "..."
    ],
-   "scope": "public" // or "friend", or "self"
+   "public": true
 }
 ```
 Posting Content:
