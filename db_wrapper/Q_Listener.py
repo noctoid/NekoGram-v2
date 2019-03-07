@@ -49,7 +49,7 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
 
             if db_response != None:
                 if "_id" in db_response:
-                    db_response["_id"] = "ObjID"
+                    db_response.pop("_id")
                 n = "[.] done " + n
                 response["status"] = "done"
                 response["result"] = db_response
@@ -59,17 +59,17 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
                 n = "[!] Not Found "+n
                 response = json.dumps({"status": "not found"})
 
-        # except (KeyError, AssertionError):
-        #     n = "[!] Invalid Incoming Request "+ n
-        #     response = json.dumps({"status": 400})
+        except (KeyError, AssertionError):
+            response = json.dumps({"status": 400, "message": n})
+            n = "[!] Invalid Incoming Request "+ n
 
         except ConnectionError:
-            n = "[!] Failed to Connect Database "+ n
-            response = json.dumps({"status": 500})
+            response = json.dumps({"status": 500, "message": n})
+            n = "[!] Failed to Connect Database " + n
 
-        # except:
-        #     pprint("[!] Internal Error ", n)
-        #     response = json.dumps({"status": 500})
+        except:
+            response = json.dumps({"status": 500, "message": n})
+            n = "[!] Internal Error " + n
 
         # return the object requested found in db back to the RPC
         await exchange.publish(
@@ -80,7 +80,8 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
             routing_key=message.reply_to
         )
         # log
-        await logger.emit(n, tee=True)
+        print(n)
+        await logger.emit(n, tee=False)
 
 
 async def main(loop):
@@ -115,5 +116,5 @@ if __name__ == "__main__":
 
     # we enter a never-ending loop that waits for data
     # and runs callbacks whenever necessary.
-    print("[x] Awaiting RPC requests")
+    print("[i] Awaiting RPC requests")
     loop.run_forever()

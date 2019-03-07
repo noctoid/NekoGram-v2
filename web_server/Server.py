@@ -137,30 +137,6 @@ async def p_delete(request):
 async def p_search(request):
     return json({"body": "soooooooooon"}, status=200)
 
-@app.route("/c/create/")
-async def c_create(request):
-    return json({"body": "sooooooooon"}, status=501)
-
-@app.route("/c/read/")
-async def c_read(request):
-    return json({"body": "sooooooooon"}, status=501)
-
-@app.route("/c/update/")
-async def c_update(request):
-    return json({"body": "sooooooooon"}, status=501)
-
-@app.route("/c/delete")
-async def c_delete(request):
-    return json({"body": "sooooooooon"}, status=501)
-
-@app.route("/l/do/")
-async def l_do(request):
-    return json({"body": "sooooooooon"}, status=501)
-
-@app.route("/l/undo")
-async def l_undo(request):
-    return json({"body": "sooooooooon"}, status=501)
-
 @app.route("/u/create/", methods=['OPTIONS', 'POST'])
 async def u_create(request):
     print(request.json)
