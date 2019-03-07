@@ -30,7 +30,7 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
             query            = req['query']
 
             assert api_version_used == "0.1"
-            assert method_used in ['read', 'delete', 'update', 'create']
+            assert method_used in ['read', 'delete', 'update', 'create', "batch_read"]
             assert object_requested in ["postings", "comments", "likes", "profiles"]
             assert len(query) > 0
 
@@ -43,9 +43,7 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
                 query=query
             )
             db_response = await odc.do()
-            response = {
-
-            }
+            response = {}
 
             if db_response != None:
                 if "_id" in db_response:

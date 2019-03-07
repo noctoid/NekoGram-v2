@@ -15,6 +15,8 @@ import asyncio
 from Request_Handler import RequestHandler
 from Models import Posting, User
 
+DEV = True
+
 ## attempt to make getting post data smarter
 # schema = {
 #     "p.read": {
@@ -92,7 +94,7 @@ async def test(request):
 @protected()
 async def p_read(request):
     # form = request.form
-    print(request)
+    print(request.json)
 
     query = request.json
     try:
@@ -103,6 +105,23 @@ async def p_read(request):
         return json({"status": "bad request"}, status=400)
 
     print(result)
+    return json(j.loads(result))
+
+@app.route("/p/read_many/", methods=['POST', 'OPTIONS'])
+@protected()
+async def p_read_many(request):
+    if DEV:
+        print(request.json)
+    query = request.json
+    try:
+        result = await logic.get_postings_batch(
+            query['list_of_pid']
+        )
+    except (ValueError, IndexError, KeyError):
+        return json({"status": "bad request"}, status=400)
+
+    if DEV:
+        print(result)
     return json(j.loads(result))
 
 @app.route("/p/create/", methods=['POST', 'OPTIONS'])

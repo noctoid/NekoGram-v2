@@ -62,6 +62,21 @@ if __name__ == "__main__":
             'data': {
                 "username": "noctoid"
             }
+        },
+        {
+            "url": "http://127.0.0.1:8000/p/read_many/",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token,
+            },
+            'data': {
+                "username": "noctoid",
+                "get": [
+                    "123",
+                    "456",
+                    "789"
+                ]
+            }
         }
     ]
 
@@ -85,6 +100,7 @@ if __name__ == "__main__":
                     'valid': True},
          'status': 'done'},
         {'result': {'status': 200}, 'status': 'done'},
+        {},
         {}
 
     ]

@@ -44,6 +44,16 @@ class RequestHandler:
 
         return result
 
+    async def get_postings_batch(self, list_of_pid):
+        query = self.sample_query
+        query["object"] = "postings"
+        query["method"] = "batch_read"
+        query['query'] = {
+            "list_of_pid": list_of_pid
+        }
+        if not self.ODM:
+            await self._initialize(asyncio.get_event_loop())
+        result = await self.ODM.call(query)
 
     async def create_postings(self, uid, txt, mime, media_url):
         doc = {
