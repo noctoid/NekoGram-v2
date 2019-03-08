@@ -40,6 +40,8 @@ class OD_Converter:
                 return await self.update_postings()
             elif self.method == "delete":
                 return await self.delete_postings()
+            elif self.method == "batch_read":
+                return await self.batch_get_postings()
         elif self.obj == "comments":
             pass
         elif self.obj == "likes":
@@ -56,6 +58,18 @@ class OD_Converter:
             "user_content", "postings",
             self.query["key"], self.query["value"]
         )
+        return result
+
+    async def batch_get_postings(self):
+        result = []
+        for q in self.query["list_of_pid"]:
+            elem = await self.mongo_client.findByKeyValue(
+                "user_content", "postings",
+                "pid", q
+            )
+            elem.pop("_id")
+            result.append(elem)
+        print("DB->", result)
         return result
 
 

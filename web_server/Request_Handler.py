@@ -55,6 +55,8 @@ class RequestHandler:
             await self._initialize(asyncio.get_event_loop())
         result = await self.ODM.call(query)
 
+        return result
+
     async def create_postings(self, uid, txt, mime, media_url):
         doc = {
             "uid": uid,

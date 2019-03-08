@@ -44,6 +44,7 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
             )
             db_response = await odc.do()
             response = {}
+            print(response)
 
             if db_response != None:
                 if "_id" in db_response:
@@ -65,9 +66,9 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
             response = json.dumps({"status": 500, "message": n})
             n = "[!] Failed to Connect Database " + n
 
-        except:
-            response = json.dumps({"status": 500, "message": n})
-            n = "[!] Internal Error " + n
+        # except:
+        #     response = json.dumps({"status": 500, "message": n})
+        #     n = "[!] Internal Error " + n
 
         # return the object requested found in db back to the RPC
         await exchange.publish(
