@@ -42,6 +42,8 @@ class OD_Converter:
                 return await self.delete_postings()
             elif self.method == "batch_read":
                 return await self.batch_get_postings()
+            elif self.method == "user_plist":
+                return await self.user_plist()
         elif self.obj == "comments":
             pass
         elif self.obj == "likes":
@@ -71,6 +73,13 @@ class OD_Converter:
             result.append(elem)
         print("DB->", result)
         return result
+
+    async def user_plist(self):
+        self.query['key'] = "uid"
+        self.query['value'] = self.query["uid"]
+        user = await self.get_user()
+        return user['postings']
+
 
 
     # All write methods

@@ -57,6 +57,19 @@ class RequestHandler:
 
         return result
 
+    async def list_user_postings(self, uid):
+        query = self.sample_query
+        query["object"] = "postings"
+        query["method"] = "user_plist"
+        query["query"] = {
+            "uid": uid
+        }
+        if not self.ODM:
+            await self._initialize(asyncio.get_event_loop())
+        result = await self.ODM.call(query)
+
+        return result
+
     async def create_postings(self, uid, txt, mime, media_url):
         doc = {
             "uid": uid,

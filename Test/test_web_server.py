@@ -8,6 +8,8 @@ def post(url, headers, data):
 
 
 if __name__ == "__main__":
+    server = "http://127.0.0.1:8000/"
+
     token = json.loads(post(
             "http://127.0.0.1:8000/auth/",
             {"Content-Type": "application/json"},
@@ -48,7 +50,7 @@ if __name__ == "__main__":
         #         "Content-Type": "application/json"
         #     },
         #     "data": {
-        #         "username": "noctoid1",
+        #         "username": "noctoid",
         #         "password": "qwer1234",
         #         "displayName": "Noctoid"
         #     }
@@ -63,17 +65,27 @@ if __name__ == "__main__":
         #         "username": "noctoid"
         #     }
         # },
+        # {
+        #     "url": "http://127.0.0.1:8000/p/read_many/",
+        #     "headers": {
+        #         "Content-Type": "application/json",
+        #         "Authorization": "Bearer " + token,
+        #     },
+        #     'data': {
+        #         "list_of_pid": [
+        #             "2128cbf7-2284-48a6-8fac-69e9b4bccc95",
+        #             "31a47ed1-2752-4482-9049-5257a6ec0962",
+        #         ]
+        #     }
+        # },
         {
-            "url": "http://127.0.0.1:8000/p/read_many/",
-            "headers": {
+            "url": "http://127.0.0.1:8000/p/user_plist/",
+            "headers" : {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + token,
             },
             'data': {
-                "list_of_pid": [
-                    "2128cbf7-2284-48a6-8fac-69e9b4bccc95",
-                    "31a47ed1-2752-4482-9049-5257a6ec0962",
-                ]
+                "uid": "e8be2184-642e-4517-84ad-8cbec50b05c8"
             }
         }
     ]
@@ -98,6 +110,7 @@ if __name__ == "__main__":
         #             'valid': True},
         #  'status': 'done'},
         # {'result': {'status': 200}, 'status': 'done'},
+        # {},
         # {},
         {}
 

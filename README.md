@@ -10,10 +10,13 @@ NekoGram web server is built on the great Python web framework Sanic which suppo
 All postings related APIs are like this /p/... 
 
 ```html
-/p/get/
+/p/read/
+/p/read_many/
 /p/create/
-/p/delete/
 /p/update/
+/p/delete/
+/p/search/
+/p/user_plist/
 ```
 ##### comments
 ```html
@@ -178,6 +181,12 @@ All the data models are described in this session, and they are ```User, Posting
   "username": "username",
   "displayName": "Display Name",
   "profile_image": "https://cdn.example.com/img/1234567.png",
+  "following": [
+    "uid1", "uid2", "uid3"
+  ],
+  "follower": [
+    "uid1", "uid2", "uid3"
+  ],
   "postings": [
     "pid-1", "pid-2", "..."
   ],
