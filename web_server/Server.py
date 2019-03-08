@@ -37,7 +37,7 @@ DEV = True
 #     if not schema:
 #         print("Schema provided is empty, nothing to be done.")
 
-
+logic = RequestHandler()
 
 class User1:
 
@@ -60,26 +60,29 @@ userid_table = {u.user_id: u for u in users}
 
 
 async def authenticate(request, *args, **kwargs):
+    # print(request.json)
     username = request.json.get("username", None)
     password = request.json.get("password", None)
 
     if not username or not password:
         raise exceptions.AuthenticationFailed("Missing username or password.")
 
-    user = username_table.get(username, None)
-    if user is None:
+    result = await logic.auth_user(username, password)
+    result = j.loads(result)['result']
+    print(result)
+    if result['status'] == "failed":
         raise exceptions.AuthenticationFailed("User not found.")
-
-    if password != user.password:
-        raise exceptions.AuthenticationFailed("Password is incorrect.")
-
-    return user
+    elif result['status'] == "success":
+        if result['auth'] == True:
+            user = User(uid='test', username=username, password=password)
+            return user
+        else:
+            raise exceptions.AuthenticationFailed("Password is incorrect")
 
 
 app = Sanic()
 initialize(app, authenticate=authenticate)
 CORS(app)
-logic = RequestHandler()
 
 
 @app.route("/")
@@ -194,7 +197,7 @@ async def u_create(request):
 async def u_read_info(request):
     try:
         query = request.json
-        print(query)
+        # print(query)
         result = await logic.get_user(
             query['username']
         )

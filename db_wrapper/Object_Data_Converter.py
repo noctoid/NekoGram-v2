@@ -53,6 +53,17 @@ class OD_Converter:
                 return await self.create_user()
             elif self.method == "read":
                 return await self.get_user()
+            elif self.method == "checkpwd":
+                return await self.auth_user()
+
+    async def auth_user(self):
+        self.query['key'] = "username"
+        self.query['value'] = self.query["username"]
+        user = await self.get_user()
+        print(user)
+        if not user:
+            return {"status": "failed", "message": "No such user"}
+        return {"status": "success", "auth": user['password'] == self.query['password']}
 
     # All read methods
     async def get_postings(self):

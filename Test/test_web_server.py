@@ -13,8 +13,9 @@ if __name__ == "__main__":
     token = json.loads(post(
             "http://127.0.0.1:8000/auth/",
             {"Content-Type": "application/json"},
-            {"username":"user1", "password":"abcxyz"}
+            {"username":"noctoid", "password":"qwer1234"}
     ))
+    print(token)
     token = token["access_token"]
 
     r = json.loads(requests.get("http://127.0.0.1:8000/", headers={"Authorization": "Bearer "+token}).text)

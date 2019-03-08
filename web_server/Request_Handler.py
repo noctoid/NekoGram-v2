@@ -26,6 +26,21 @@ class RequestHandler:
     async def _initialize(self, loop):
         self.ODM = await AsyncPersistenceConnector(loop).connect()
 
+    async def auth_user(self, username, password):
+        query = self.sample_query
+        query["object"] = "profiles"
+        query["method"] = "checkpwd"
+        query["query"] = {
+            "username": username,
+            "password": password
+        }
+
+        if not self.ODM:
+            await self._initialize(asyncio.get_event_loop())
+        result = await self.ODM.call(query)
+
+        return result
+
 
     async def get_postings(self, key, value):
         # aio_db = await AsyncPersistenceConnector(asyncio.get_event_loop()).connect()
