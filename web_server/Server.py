@@ -17,46 +17,7 @@ from Models import Posting, User
 
 DEV = True
 
-## attempt to make getting post data smarter
-# schema = {
-#     "p.read": {
-#         "key": "str",
-#         "value": "str",
-#         "required": ["key", "value"]
-#     },
-#     "p.create": {
-#         "required": ["uid", ],
-#         "uid": "str",
-#         "pid": "str",
-#         "type": "str",
-#         "content": "obj",
-#     }
-# }
-#
-# def digPost(request, schema={}):
-#     if not schema:
-#         print("Schema provided is empty, nothing to be done.")
-
 logic = RequestHandler()
-
-class User1:
-
-    def __init__(self, id, username, password):
-        self.user_id = id
-        self.username = username
-        self.password = password
-
-    def __repr__(self):
-        return "User(id='{}')".format(self.user_id)
-
-    def to_dict(self):
-        return {"user_id": self.user_id, "username": self.username}
-
-
-users = [User1(1, "user1", "abcxyz"), User1(2, "user2", "abcxyz")]
-
-username_table = {u.username: u for u in users}
-userid_table = {u.user_id: u for u in users}
 
 
 async def authenticate(request, *args, **kwargs):
@@ -69,7 +30,7 @@ async def authenticate(request, *args, **kwargs):
 
     result = await logic.auth_user(username, password)
     result = j.loads(result)['result']
-    print(result)
+
     if result['status'] == "failed":
         raise exceptions.AuthenticationFailed("User not found.")
     elif result['status'] == "success":
