@@ -2,10 +2,10 @@ from uuid import uuid4
 import json
 
 class User:
-    def __init__(self, uid="", password="", username="", displayName="", profile_image=None):
-        self.uid = uid
-        if not uid:
-            self.uid = str(uuid4())
+    def __init__(self, user_id="", password="", username="", displayName="", profile_image=None):
+        self.user_id = user_id
+        # if not user_id:
+        #     self.user_id = str(uuid4())
         self.password = password
         self.username = username
         self.displayName = displayName
@@ -15,7 +15,7 @@ class User:
 
     def to_dict(self):
         return {
-            "uid": self.uid,
+            "user_id": self.user_id,
             "password": self.password,
             "username": self.username,
             "displayName": self.displayName

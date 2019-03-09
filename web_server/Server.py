@@ -6,6 +6,7 @@ from sanic.response import json
 from sanic_jwt import exceptions
 from sanic_jwt import initialize
 from sanic_jwt.decorators import protected
+from jwt import decode as jwt_decode
 
 import json as j
 
@@ -35,20 +36,21 @@ async def authenticate(request, *args, **kwargs):
         raise exceptions.AuthenticationFailed("User not found.")
     elif result['status'] == "success":
         if result['auth'] == True:
-            user = User(uid='test', username=username, password=password)
+            user = User(user_id=username, username=username, password=password)
             return user
         else:
             raise exceptions.AuthenticationFailed("Password is incorrect")
 
 
 app = Sanic()
-initialize(app, authenticate=authenticate)
+initialize(app, authenticate=authenticate, secret="secret")
 CORS(app)
 
 
 @app.route("/")
 @protected()
 async def test(request):
+    print(jwt_decode(request.headers['authorization'][7:], "secret"))
     return json({"Neko": "Gram!"})
 
 
