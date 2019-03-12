@@ -97,7 +97,7 @@ async def p_create(request):
     try:
         query = request.json
 
-        result = await logic.create_postings_2(
+        result = await logic.create_postings(
             Posting(
                 uid=str(query['uid']),
                 txt=str(query['txt']),
