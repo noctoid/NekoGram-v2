@@ -80,7 +80,7 @@ if __name__ == "__main__":
         #     }
         # },
         {
-            "url": "http://127.0.0.1:8000/p/user_plist/",
+            "url": "http://127.0.0.1:8000/p/u_get_plist/",
             "headers" : {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + token,

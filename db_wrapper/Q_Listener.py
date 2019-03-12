@@ -24,13 +24,11 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
         # try to parse the request, if fails send status 400 bad request
         try:
             req = json.loads(n)
-            api_version_used = req['ver']
             method_used      = req["method"]
             object_requested = req['object']
             query            = req['query']
 
-            assert api_version_used == "0.1"
-            assert method_used in ['read', 'delete', 'update', 'create', "batch_read", "user_plist", "checkpwd"]
+            assert method_used in ['read', 'delete', 'update', 'create', "batch_read", "u_get_plist", "checkpwd"]
             assert object_requested in ["postings", "comments", "likes", "profiles"]
             assert len(query) > 0
 
@@ -45,6 +43,31 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
             db_response = await odc.do()
             response = {}
             print(response)
+
+            # if self.obj == "postings":
+            #     if self.method == "read":
+            #         return await self.p_read()
+            #     elif self.method == "create":
+            #         return await self.p_new()
+            #     elif self.method == "update":
+            #         return await self.p_update()
+            #     elif self.method == "delete":
+            #         return await self.p_remove()
+            #     elif self.method == "batch_read":
+            #         return await self.batch_get_postings()
+            #     elif self.method == "u_get_plist":
+            #         return await self.u_get_plist()
+            # elif self.obj == "comments":
+            #     pass
+            # elif self.obj == "likes":
+            #     pass
+            # elif self.obj == "profiles":
+            #     if self.method == "create":
+            #         return await self.u_new()
+            #     elif self.method == "read":
+            #         return await self.u_get()
+            #     elif self.method == "checkpwd":
+            #         return await self.auth_user()
 
             if db_response != None:
                 if "_id" in db_response:

@@ -33,40 +33,40 @@ class OD_Converter:
         """
         if self.obj == "postings":
             if self.method == "read":
-                return await self.get_postings()
+                return await self.p_read()
             elif self.method == "create":
-                return await self.create_postings()
+                return await self.p_new()
             elif self.method == "update":
-                return await self.update_postings()
+                return await self.p_update()
             elif self.method == "delete":
-                return await self.delete_postings()
+                return await self.p_remove()
             elif self.method == "batch_read":
                 return await self.batch_get_postings()
-            elif self.method == "user_plist":
-                return await self.user_plist()
+            elif self.method == "u_get_plist":
+                return await self.u_get_plist()
         elif self.obj == "comments":
             pass
         elif self.obj == "likes":
             pass
         elif self.obj == "profiles":
             if self.method == "create":
-                return await self.create_user()
+                return await self.u_new()
             elif self.method == "read":
-                return await self.get_user()
+                return await self.u_get()
             elif self.method == "checkpwd":
                 return await self.auth_user()
 
     async def auth_user(self):
         self.query['key'] = "username"
         self.query['value'] = self.query["username"]
-        user = await self.get_user()
+        user = await self.u_get()
         print(user)
         if not user:
             return {"status": "failed", "message": "No such user"}
         return {"status": "success", "auth": user['password'] == self.query['password']}
 
     # All read methods
-    async def get_postings(self):
+    async def p_read(self):
         result = await self.mongo_client.findByKeyValue(
             "user_content", "postings",
             self.query["key"], self.query["value"]
@@ -85,22 +85,22 @@ class OD_Converter:
         print("DB->", result)
         return result
 
-    async def user_plist(self):
+    async def u_get_plist(self):
         self.query['key'] = "uid"
         self.query['value'] = self.query["uid"]
-        user = await self.get_user()
+        user = await self.u_get()
         return user['postings']
 
 
 
     # All write methods
-    async def create_postings(self):
+    async def p_new(self):
         result = await self.mongo_client.InsertByKeyValue(
             "user_content", "postings", self.query
         )
         return {"status": 200}
 
-    async def create_user(self):
+    async def u_new(self):
         isUserExist = await self.mongo_client.findByKeyValue(
             "user_content", "profiles", "username", self.query["username"]
         )
@@ -111,7 +111,7 @@ class OD_Converter:
         )
         return {"status": 200}
 
-    async def get_user(self):
+    async def u_get(self):
         result = await self.mongo_client.findByKeyValue(
             "user_content", "profiles", self.query['key'], self.query['value']
         )
@@ -126,6 +126,6 @@ if __name__ == "__main__":
             "posting-id": 1234567
         }
     })
-    result = loop.run_until_complete(c.get_postings())
+    result = loop.run_until_complete(c.p_read())
 
     print(result)

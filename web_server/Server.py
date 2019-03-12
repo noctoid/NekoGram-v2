@@ -122,7 +122,7 @@ async def p_delete(request):
 async def p_search(request):
     return json({"body": "soooooooooon"}, status=200)
 
-@app.route("/p/user_plist", methods=['OPTIONS', 'POST'])
+@app.route("/p/u_get_plist", methods=['OPTIONS', 'POST'])
 @protected()
 async def p_user_plist(request):
     if DEV:
