@@ -47,7 +47,7 @@ class RequestHandler:
         )
 
     async def delete_postings(self, pid):
-        return await self.exec("p.delete", [pid])
+        return await self.exec("p.remove", {"list_of_pid":[pid]})
 
     async def create_postings(self, P:Posting):
         payload = {"new_post": P.to_dict()}

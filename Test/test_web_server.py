@@ -1,6 +1,7 @@
 import requests
 import json
 import pprint
+from uuid import uuid4
 
 def post(url, headers, data):
     r = requests.post(url, headers=headers, data=json.dumps(data))
@@ -49,11 +50,12 @@ if __name__ == "__main__":
     user = result['result']
     print(user)
 
+    pid = "00000000-1111-2222-3333-000000000000"
 
     result = post(
         "http://127.0.0.1:8000/p/create/",
         headers,
-        {"uid": user["uid"], "type":"posting", "content": {
+        {"pid":pid, "uid": user["uid"], "type":"posting", "content": {
           "txt": "I had In n Out for lunch today and it is good.",
           "hasMedia": True,
           "mimeType": "image/png",
@@ -61,6 +63,12 @@ if __name__ == "__main__":
 
         },
         "comments":[], "likes":[], "repost":[], "public": True}
+    )
+
+    result = post(
+        "http://127.0.0.1:8000/p/delete/",
+        headers,
+        {"pid": pid}
     )
 
     # result = json.loads(post(

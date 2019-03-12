@@ -97,14 +97,25 @@ async def p_create(request):
     try:
         query = request.json
 
-        result = await logic.create_postings(
-            Posting(
-                uid=str(query['uid']),
-                type=str(query["type"]),
-                content=query['content'],
-                public=bool(query["public"])
+        if DEV:
+            result = await logic.create_postings(
+                Posting(
+                    pid=str(query["pid"]),
+                    uid=str(query['uid']),
+                    type=str(query["type"]),
+                    content=query['content'],
+                    public=bool(query["public"])
+                )
             )
-        )
+        else:
+            result = await logic.create_postings(
+                Posting(
+                    uid=str(query['uid']),
+                    type=str(query["type"]),
+                    content=query['content'],
+                    public=bool(query["public"])
+                )
+            )
     except (ValueError, IndexError, KeyError):
         return json({"status": "bad request"}, status=400)
     return json(j.loads(result))
@@ -113,9 +124,16 @@ async def p_create(request):
 async def p_update(request):
     return json({"body": "sooooooooon"}, status=501)
 
-@app.route("/p/delete/")
+@app.route("/p/delete/", methods=['OPTIONS', 'POST'])
 async def p_delete(request):
-    return json({"body": "sooooooooon"}, status=501)
+    try:
+        query = request.json
+        if DEV:
+            print(query)
+        result = await logic.delete_postings(str(query["pid"]))
+    except (ValueError, IndexError, KeyError):
+        return json({"status": "bad request"}, status=400)
+    return json(j.loads(result))
 
 @app.route("/p/search/", methods=['OPTIONS', 'POST'])
 async def p_search(request):

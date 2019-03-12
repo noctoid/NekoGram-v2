@@ -45,10 +45,11 @@ class OD_Converter:
         )
         return {"status": 200}
 
-    async def p_remove(self, pid):
-        result = await self.mongo_client.deleteByKeyValue(
-            "user_content", "postings", "pid", pid
-        )
+    async def p_remove(self, list_of_pid):
+        for pid in list_of_pid:
+            result = await self.mongo_client.deleteByKeyValue(
+                "user_content", "postings", "pid", pid
+            )
         return {"status": 200}
 
     async def u_new(self, new_user):
