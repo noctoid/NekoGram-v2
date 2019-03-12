@@ -17,17 +17,6 @@ class OD_Converter:
         except:
             raise ConnectionError
 
-    def load(self, obj, method, query):
-        """
-        :param obj:     "postings", "comments", "likes"
-        :param method:  "read", "delete", "update", "create"
-        :param query:   depend on query
-        :return:
-        """
-        self.obj = obj
-        self.method = method
-        self.query = query
-
     async def u_auth(self, username, password):
         user = await self.u_get(username)
         print(user)
@@ -35,13 +24,6 @@ class OD_Converter:
             return {"status": "failed", "message": "No such user"}
         return {"status": "success", "auth": user['password'] == password}
 
-    # All read methods
-    # async def p_get(self):
-    #     result = await self.mongo_client.findByKeyValue(
-    #         "user_content", "postings",
-    #         self.query["key"], self.query["value"]
-    #     )
-    #     return result
 
     async def p_get(self, list_of_pid):
         result = []
