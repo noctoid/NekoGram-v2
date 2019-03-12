@@ -59,8 +59,8 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
                 response = json.dumps(response)
             # print(response, type(response))
             if response is None:
-                n = "[!] Not Found "+n
-                response = json.dumps({"status": "not found"})
+                response = json.dumps({"status": 404, "message": n})
+                n = "[!] Not Found " + n
 
         except (KeyError, AssertionError):
             response = json.dumps({"status": 400, "message": n})
