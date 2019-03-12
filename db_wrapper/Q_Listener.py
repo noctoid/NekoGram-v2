@@ -35,18 +35,27 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
 
             odc = OD_Converter(db)
 
-            if method == "u.auth":
-                db_response = await odc.u_auth(payload.get('username', None), payload.get('password', None))
-            elif method == "p.get":
+            if method == "p.get":
                 db_response = await odc.p_get(payload.get('list_of_pid', []))
             elif method == "p.new":
                 db_response = await odc.p_new(payload.get('new_post', None))
+            elif method == "p.update":
+                db_response = await odc.p_update(payload.get("pid", None), payload.get('modification', None))
+            elif method == "p.remove":
+                db_response = await odc.p_remove(payload.get('list_of_pid', []))
+
+            elif method == "u.auth":
+                db_response = await odc.u_auth(payload.get('username', None), payload.get('password', None))
             elif method == "u.get_plist":
                 db_response = await odc.u_get_plist(payload.get('username', None))
             elif method == "u.get":
                 db_response = await odc.u_get(payload.get("username", None))
             elif method == "u.new":
                 db_response = await odc.u_new(payload.get("new_user", None))
+            elif method == "u.remove":
+                db_response = await odc.u_remove(payload.get("list_of_uid", []))
+            elif method == "u.update":
+                db_response = await odc.u_update(payload.get("uid", None), payload.get("modification", None))
 
             response = {}
 
@@ -75,6 +84,9 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
         #     n = "[!] Internal Error " + n
 
         # return the object requested found in db back to the RPC
+
+        print(response)
+
         await exchange.publish(
             Message(
                 body=response.encode(),

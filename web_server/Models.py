@@ -2,23 +2,39 @@ from uuid import uuid4
 import json
 
 class User:
-    def __init__(self, user_id="", password="", username="", displayName="", profile_image=None):
+    def __init__(self, user_id= "",uid="", password="", username="", displayName="", profile_image=None):
         self.user_id = user_id
-        # if not user_id:
-        #     self.user_id = str(uuid4())
+        self.uid = uid
+        if not uid:
+            self.uid = str(uuid4())
+        self.email = ""
+        self.phone = ""
         self.password = password
         self.username = username
         self.displayName = displayName
+        self.postings = []
+        self.following = []
+        self.followers = []
+        self.notifications = []
+        self.profile_image = profile_image
 
     def __repr__(self):
         return "NekoGram User: "+self.uid+self.displayName+self.username
 
     def to_dict(self):
         return {
-            "user_id": self.user_id,
+            "user_id": self.uid,
+            "uid": self.uid,
+            "email": self.email,
+            "phone": self.phone,
             "password": self.password,
             "username": self.username,
-            "displayName": self.displayName
+            "displayName": self.displayName,
+            "postings": self.postings,
+            "following": self.following,
+            "followers": self.followers,
+            "notifications": self.notifications,
+            "profile_image": self.profile_image,
         }
 
     def json(self):

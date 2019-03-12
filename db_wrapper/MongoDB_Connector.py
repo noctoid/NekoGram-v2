@@ -25,6 +25,14 @@ class Async_Mongo_Connector:
         status = await self.client[db][colle].insert_one(doc)
         return status
 
+    async def updateByKeyValue(self, db, colle, key, value, modification):
+        status = await self.client[db][colle].find_one_and_update({key:value}, {"$set": modification})
+        return status
+
+    async def deleteByKeyValue(self, db, colle, key, value):
+        status = await self.client[db][colle].find_one_and_delete({key: value})
+        return status
+
 if __name__ == "__main__":
     c = Async_Mongo_Connector()
     loop = asyncio.get_event_loop()

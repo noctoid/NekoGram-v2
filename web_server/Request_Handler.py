@@ -37,11 +37,17 @@ class RequestHandler:
         }
         return await self.exec("p.get", payload)
 
-    async def list_user_postings(self, username):
-        payload = {
-            "username": username
-        }
-        return await self.exec("u.get_plist", payload)
+    async def update_postings(self, pid, modification):
+        return await self.exec(
+            "p.update",
+            {
+                "pid": pid,
+                'modification':modification
+            }
+        )
+
+    async def delete_postings(self, pid):
+        return await self.exec("p.delete", [pid])
 
     async def create_postings(self, P:Posting):
         payload = {"new_post": P.to_dict()}
@@ -49,8 +55,24 @@ class RequestHandler:
 
     async def create_user(self, U:User):
         payload = {"new_user": U.to_dict()}
-        return await self.exec("new_user", payload)
+        return await self.exec("u.new", payload)
 
     async def get_user(self, username):
         payload = {"username": username} #nickname for now change later
         return await self.exec("u.get", payload)
+
+    async def list_user_postings(self, username):
+        payload = {
+            "username": username
+        }
+        return await self.exec("u.get_plist", payload)
+
+    async def update_user(self, uid, modification):
+        payload = {
+            "uid": uid,
+            "modification": modification
+        }
+        return await self.exec("u.update", payload)
+
+    async def delete_user(self, uid):
+        return await self.exec("u.remove", {"list_of_uid": [uid]})

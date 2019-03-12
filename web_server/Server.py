@@ -93,16 +93,16 @@ async def p_read_many(request):
 @protected()
 async def p_create(request):
     # logic = RequestHandler()
-    print(request)
+    print(request.json)
     try:
         query = request.json
 
         result = await logic.create_postings(
             Posting(
                 uid=str(query['uid']),
-                txt=str(query['txt']),
-                mime=str(query['mime']),
-                media_url=str(query['media_url'])
+                type=str(query["type"]),
+                content=query['content'],
+                public=bool(query["public"])
             )
         )
     except (ValueError, IndexError, KeyError):
@@ -170,6 +170,18 @@ async def u_read_info(request):
 @app.route("/u/update/", methods=['OPTIONS', 'POST'])
 async def u_update(request):
     return json({"body": "sooon"}, status=200)
+
+@app.route("/u/delete/", methods=["OPTIONS", "POST"])
+@protected()
+async def u_delete(request):
+    try:
+        query = request.json
+        if DEV:
+            print(query)
+        result = await logic.delete_user(str(query["uid"]))
+    except (ValueError, IndexError, KeyError):
+        return json({"status": "bad request"}, status=400)
+    return json(j.loads(result))
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)

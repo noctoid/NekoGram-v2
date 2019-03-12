@@ -33,11 +33,21 @@ class OD_Converter:
         print("DB->", result)
         return result
 
-
-    # All write methods
-    async def p_new(self):
+    async def p_new(self, P):
         result = await self.mongo_client.InsertByKeyValue(
-            "user_content", "postings", self.query
+            "user_content", "postings", P
+        )
+        return {"status": 200}
+
+    async def p_update(self, pid, modification):
+        result = await self.mongo_client.updateByKeyValue(
+            "user_content", "postings", "pid", pid, modification
+        )
+        return {"status": 200}
+
+    async def p_remove(self, pid):
+        result = await self.mongo_client.deleteByKeyValue(
+            "user_content", "postings", "pid", pid
         )
         return {"status": 200}
 
@@ -61,6 +71,19 @@ class OD_Converter:
     async def u_get_plist(self, username):
         user = await self.u_get(username)
         return user['postings']
+
+    async def u_remove(self, list_of_uid):
+        for uid in list_of_uid:
+            result = await self.mongo_client.deleteByKeyValue(
+                "user_content", "profiles", "uid", uid
+            )
+        return {"status": 200}
+
+    async def u_update(self, uid, modification):
+        result = await self.mongo_client.updateByKeyValue(
+            "user_content", "profiles", "uid", uid, modification
+        )
+        return result
 
 
 
