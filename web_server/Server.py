@@ -120,9 +120,19 @@ async def p_create(request):
         return json({"status": "bad request"}, status=400)
     return json(j.loads(result))
 
-@app.route("/p/update/")
+@app.route("/p/update/", methods=['OPTIONS', 'POST'])
 async def p_update(request):
-    return json({"body": "sooooooooon"}, status=501)
+    print(request.json)
+    try:
+        query = request.json
+
+        result = await logic.update_postings(
+            str(query["pid"]),
+            query['modification']
+        )
+    except (ValueError, IndexError, KeyError):
+        return json({"status": "bad request"}, status=400)
+    return json(j.loads(result))
 
 @app.route("/p/delete/", methods=['OPTIONS', 'POST'])
 async def p_delete(request):

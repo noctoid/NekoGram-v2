@@ -77,6 +77,25 @@ if __name__ == "__main__":
     )
 
     result = post(
+        "http://127.0.0.1:8000/p/update/",
+        headers,
+        {
+            "pid": pid,
+            "modification": {
+                "txt": "No more In n Out!"
+            }
+        }
+    )
+    pprint.pprint(json.loads(post(
+        "http://127.0.0.1:8000/p/read/",
+        headers,
+        {
+            "pid": pid
+        }
+    )))
+
+
+    result = post(
         "http://127.0.0.1:8000/p/delete/",
         headers,
         {"pid": pid}
