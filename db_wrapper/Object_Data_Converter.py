@@ -28,35 +28,6 @@ class OD_Converter:
         self.method = method
         self.query = query
 
-    async def do(self):
-        """
-        :return:
-        """
-        if self.obj == "postings":
-            if self.method == "read":
-                return await self.p_read()
-            elif self.method == "create":
-                return await self.p_new()
-            elif self.method == "update":
-                return await self.p_update()
-            elif self.method == "delete":
-                return await self.p_remove()
-            elif self.method == "batch_read":
-                return await self.batch_get_postings()
-            elif self.method == "u_get_plist":
-                return await self.u_get_plist()
-        elif self.obj == "comments":
-            pass
-        elif self.obj == "likes":
-            pass
-        elif self.obj == "profiles":
-            if self.method == "create":
-                return await self.u_new()
-            elif self.method == "read":
-                return await self.u_get()
-            elif self.method == "checkpwd":
-                return await self.auth_user()
-
     async def u_auth(self, username, password):
         user = await self.u_get(username)
         print(user)

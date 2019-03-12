@@ -33,15 +33,6 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
             ]
             assert type(payload) == dict
 
-            # parse query fetched from Q
-            # get data as desired object
-            # odc = OD_Converter(
-            #     db,
-            #     obj_requested=object_requested,
-            #     method=method_used,
-            #     query=query
-            # )
-            # db_response = await odc.do()
             odc = OD_Converter(db)
 
             if method == "u.auth":
@@ -58,31 +49,6 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
                 db_response = await odc.u_new(payload.get("new_user", None))
 
             response = {}
-
-            # if self.obj == "postings":
-            #     if self.method == "read":
-            #         return await self.p_read()
-            #     elif self.method == "create":
-            #         return await self.p_new()
-            #     elif self.method == "update":
-            #         return await self.p_update()
-            #     elif self.method == "delete":
-            #         return await self.p_remove()
-            #     elif self.method == "batch_read":
-            #         return await self.batch_get_postings()
-            #     elif self.method == "u_get_plist":
-            #         return await self.u_get_plist()
-            # elif self.obj == "comments":
-            #     pass
-            # elif self.obj == "likes":
-            #     pass
-            # elif self.obj == "profiles":
-            #     if self.method == "create":
-            #         return await self.u_new()
-            #     elif self.method == "read":
-            #         return await self.u_get()
-            #     elif self.method == "checkpwd":
-            #         return await self.auth_user()
 
             if db_response != None:
                 if "_id" in db_response:
