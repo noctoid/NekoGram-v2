@@ -187,7 +187,17 @@ async def u_read_info(request):
 
 @app.route("/u/update/", methods=['OPTIONS', 'POST'])
 async def u_update(request):
-    return json({"body": "sooon"}, status=200)
+    print(request.json)
+    try:
+        query = request.json
+
+        result = await logic.update_user(
+            str(query["uid"]),
+            query['modification']
+        )
+    except (ValueError, IndexError, KeyError):
+        return json({"status": "bad request"}, status=400)
+    return json(j.loads(result))
 
 @app.route("/u/delete/", methods=["OPTIONS", "POST"])
 @protected()

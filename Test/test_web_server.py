@@ -66,6 +66,17 @@ if __name__ == "__main__":
     )
 
     result = post(
+        "http://127.0.0.1:8000/u/update/",
+        headers,
+        {
+            "uid": user["uid"],
+            "modification": {
+                "displayName": "TestModified"
+            }
+        }
+    )
+
+    result = post(
         "http://127.0.0.1:8000/p/delete/",
         headers,
         {"pid": pid}
