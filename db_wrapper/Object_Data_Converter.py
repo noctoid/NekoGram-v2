@@ -9,11 +9,7 @@ class OD_Converter:
     # def __init__(self, db, obj_requested=None, method=None, query=None):
     def __init__(self, db_connection):
         try:
-            # self.mongo_client = Async_Mongo_Connector()
             self.mongo_client = db_connection
-            # self.obj = obj_requested
-            # self.method = method
-            # self.query = query
         except:
             raise ConnectionError
 
