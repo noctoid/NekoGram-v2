@@ -24,25 +24,40 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
         # try to parse the request, if fails send status 400 bad request
         try:
             req = json.loads(n)
-            method_used      = req["method"]
-            object_requested = req['object']
-            query            = req['query']
+            method = req.get('method', None)
+            payload = req.get('payload', None)
 
-            assert method_used in ['read', 'delete', 'update', 'create', "batch_read", "u_get_plist", "checkpwd"]
-            assert object_requested in ["postings", "comments", "likes", "profiles"]
-            assert len(query) > 0
+            assert method in [
+                'p.get', 'p.new', 'p.update', 'p.remove',
+                'u.get_plist', 'u.get', 'u.auth', 'u.new', 'u.remove', 'u.update', 'u.freeze'
+            ]
+            assert type(payload) == dict
 
             # parse query fetched from Q
             # get data as desired object
-            odc = OD_Converter(
-                db,
-                obj_requested=object_requested,
-                method=method_used,
-                query=query
-            )
-            db_response = await odc.do()
+            # odc = OD_Converter(
+            #     db,
+            #     obj_requested=object_requested,
+            #     method=method_used,
+            #     query=query
+            # )
+            # db_response = await odc.do()
+            odc = OD_Converter(db)
+
+            if method == "u.auth":
+                db_response = await odc.u_auth(payload.get('username', None), payload.get('password', None))
+            elif method == "p.get":
+                db_response = await odc.p_get(payload.get('list_of_pid', []))
+            elif method == "p.new":
+                db_response = await odc.p_new(payload.get('new_post', None))
+            elif method == "u.get_plist":
+                db_response = await odc.u_get_plist(payload.get('username', None))
+            elif method == "u.get":
+                db_response = await odc.u_get(payload.get("username", None))
+            elif method == "u.new":
+                db_response = await odc.u_new(payload.get("new_user", None))
+
             response = {}
-            print(response)
 
             # if self.obj == "postings":
             #     if self.method == "read":

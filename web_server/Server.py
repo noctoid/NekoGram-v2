@@ -64,9 +64,8 @@ async def p_read(request):
 
     query = request.json
     try:
-        result = await logic.get_postings(
-            str(query['key']),
-            str(query['value']))
+        pid = str(query['pid'])
+        result = await logic.get_postings(pid)
     except (ValueError, IndexError, KeyError):
         return json({"status": "bad request"}, status=400)
 
@@ -131,7 +130,7 @@ async def p_user_plist(request):
     try:
         query = request.json
         result = await logic.list_user_postings(
-            query['uid']
+            query['username']
         )
     except (ValueError, IndexError, KeyError):
         return json({"status": "bad request"}, status=400)

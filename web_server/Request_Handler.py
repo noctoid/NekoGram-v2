@@ -8,10 +8,8 @@ from settings import Q_API_VER
 class RequestHandler:
     def __init__(self):
         self.sample_query = {
-            "ver": Q_API_VER,
-            "object": "",
             "method": "",
-            "query": {}
+            "payload": {}
         }
 
         self.ODM = None
@@ -26,41 +24,36 @@ class RequestHandler:
 
     async def auth_user(self, username, password):
         query = self.sample_query
-        query["object"] = "profiles"
-        query["method"] = "checkpwd"
-        query["query"] = {
+        query["method"] = "u.auth"
+        query["payload"] = {
             "username": username,
             "password": password
         }
 
         return await self.exec(query)
 
-    async def get_postings(self, key, value):
+    async def get_postings(self, pid):
         # aio_db = await AsyncPersistenceConnector(asyncio.get_event_loop()).connect()
         query = self.sample_query
-        query["object"] = "postings"
-        query["method"] = "read"
-        query["query"] = {
-            "key": key,
-            "value": value
+        query["method"] = "p.get"
+        query["payload"] = {
+            'list_of_pid': [pid]
         }
         return await self.exec(query)
 
     async def get_postings_batch(self, list_of_pid):
         query = self.sample_query
-        query["object"] = "postings"
-        query["method"] = "batch_read"
-        query['query'] = {
+        query["method"] = "p.get"
+        query['payload'] = {
             "list_of_pid": list_of_pid
         }
         return await self.exec(query)
 
-    async def list_user_postings(self, uid):
+    async def list_user_postings(self, username):
         query = self.sample_query
-        query["object"] = "postings"
-        query["method"] = "u_get_plist"
-        query["query"] = {
-            "uid": uid
+        query["method"] = "u.get_plist"
+        query["payload"] = {
+            "username": username
         }
         return await self.exec(query)
 
@@ -72,30 +65,25 @@ class RequestHandler:
             "mime": mime,
             "media_url": media_url
         }
-        # aio_db = await AsyncPersistenceConnector(asyncio.get_event_loop()).connect()
         query = self.sample_query
-        query["object"] = "postings"
         query["method"] = "create"
-        query["query"] = doc
+        query["payload"] = {"new_post": doc}
         return await self.exec(query)
 
     async def create_postings_2(self, P:Posting):
         query = self.sample_query
-        query["object"] = "postings"
-        query["method"] = "create"
-        query["query"] = P.to_dict()
+        query["method"] = "p.new"
+        query["payload"] = {"new_post": P.to_dict()}
         return await self.exec(query)
 
     async def create_user(self, U:User):
         query = self.sample_query
-        query['object'] = 'profiles'
-        query['method'] = 'create'
-        query['query'] = U.to_dict()
+        query['method'] = 'u.new'
+        query['payload'] = {"new_user": U.to_dict()}
         return await self.exec(query)
 
     async def get_user(self, username):
         query = self.sample_query
-        query["object"] = "profiles"
-        query["method"] = "read"
-        query["query"] = {"key": "username", "value": username} #nickname for now change later
+        query["method"] = "u.get"
+        query["payload"] = {"username": username} #nickname for now change later
         return await self.exec(query)

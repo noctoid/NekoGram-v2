@@ -6,13 +6,14 @@ import asyncio
 
 
 class OD_Converter:
-    def __init__(self, db, obj_requested=None, method=None, query=None):
+    # def __init__(self, db, obj_requested=None, method=None, query=None):
+    def __init__(self, db_connection):
         try:
             # self.mongo_client = Async_Mongo_Connector()
-            self.mongo_client = db
-            self.obj = obj_requested
-            self.method = method
-            self.query = query
+            self.mongo_client = db_connection
+            # self.obj = obj_requested
+            # self.method = method
+            # self.query = query
         except:
             raise ConnectionError
 
@@ -56,26 +57,24 @@ class OD_Converter:
             elif self.method == "checkpwd":
                 return await self.auth_user()
 
-    async def auth_user(self):
-        self.query['key'] = "username"
-        self.query['value'] = self.query["username"]
-        user = await self.u_get()
+    async def u_auth(self, username, password):
+        user = await self.u_get(username)
         print(user)
         if not user:
             return {"status": "failed", "message": "No such user"}
-        return {"status": "success", "auth": user['password'] == self.query['password']}
+        return {"status": "success", "auth": user['password'] == password}
 
     # All read methods
-    async def p_read(self):
-        result = await self.mongo_client.findByKeyValue(
-            "user_content", "postings",
-            self.query["key"], self.query["value"]
-        )
-        return result
+    # async def p_get(self):
+    #     result = await self.mongo_client.findByKeyValue(
+    #         "user_content", "postings",
+    #         self.query["key"], self.query["value"]
+    #     )
+    #     return result
 
-    async def batch_get_postings(self):
+    async def p_get(self, list_of_pid):
         result = []
-        for q in self.query["list_of_pid"]:
+        for q in list_of_pid:
             elem = await self.mongo_client.findByKeyValue(
                 "user_content", "postings",
                 "pid", q
@@ -85,13 +84,6 @@ class OD_Converter:
         print("DB->", result)
         return result
 
-    async def u_get_plist(self):
-        self.query['key'] = "uid"
-        self.query['value'] = self.query["uid"]
-        user = await self.u_get()
-        return user['postings']
-
-
 
     # All write methods
     async def p_new(self):
@@ -100,22 +92,27 @@ class OD_Converter:
         )
         return {"status": 200}
 
-    async def u_new(self):
+    async def u_new(self, new_user):
         isUserExist = await self.mongo_client.findByKeyValue(
-            "user_content", "profiles", "username", self.query["username"]
+            "user_content", "profiles", "username", new_user["username"]
         )
         if isUserExist:
             return {"status": 403, "message": "username taken"}
         result = await self.mongo_client.InsertByKeyValue(
-            "user_content", "profiles", self.query
+            "user_content", "profiles", new_user
         )
         return {"status": 200}
 
-    async def u_get(self):
+    async def u_get(self, username):
         result = await self.mongo_client.findByKeyValue(
-            "user_content", "profiles", self.query['key'], self.query['value']
+            "user_content", "profiles", "username", username
         )
         return result
+
+    async def u_get_plist(self, username):
+        user = await self.u_get(username)
+        return user['postings']
+
 
 
 if __name__ == "__main__":
