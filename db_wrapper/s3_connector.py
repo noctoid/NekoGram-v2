@@ -24,7 +24,7 @@ def _what_file(bytes):
         return 'png'
 
 
-def new_media(s3, media_id, bytes_in_b64):
+async def new_media(s3, media_id, bytes_in_b64):
     fileLikeObj = file_like_obj(bytes_in_b64)
     suffix = _what_file(fileLikeObj.read())
     if suffix:

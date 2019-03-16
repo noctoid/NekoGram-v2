@@ -67,7 +67,7 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
                 db_response = await odc.u_update(payload.get("uid", None), payload.get("modification", None))
 
             elif method == "m.new":
-                db_response = odc.m_new(s3, payload.get("media_in_b64", None))
+                db_response = await odc.m_new(s3, payload.get("media_in_b64", None))
 
             response = {}
 

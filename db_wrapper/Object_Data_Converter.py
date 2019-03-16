@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import asyncio
+from concurrent.futures import ProcessPoolExecutor
 from uuid import uuid4
 
 
@@ -87,9 +88,9 @@ class OD_Converter:
         )
         return result
 
-    def m_new(self, s3, media):
+    async def m_new(self, s3, media):
         media_id = str(uuid4())
-        result = new_media(s3, media_id, media)
+        result = await new_media(s3, media_id, media)
         if result:
             return {"media_url": result}
         else:
