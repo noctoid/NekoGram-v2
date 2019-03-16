@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 import asyncio
+from uuid import uuid4
 
 
 # from mongodb_connector import Async_Mongo_Connector
-
+from s3_connector import new_media
 
 class OD_Converter:
     # def __init__(self, db, obj_requested=None, method=None, query=None):
@@ -86,8 +87,13 @@ class OD_Converter:
         )
         return result
 
-    async def m_new(self, muid, media):
-        pass
+    def m_new(self, s3, media):
+        media_id = str(uuid4())
+        result = new_media(s3, media_id, media)
+        if result:
+            return {"media_url": result}
+        else:
+            return {"status": "403", "message": "not a valid media file"}
 
 
 if __name__ == "__main__":

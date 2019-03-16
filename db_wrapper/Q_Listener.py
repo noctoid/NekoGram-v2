@@ -8,9 +8,17 @@ from pprint import pprint
 from NekoLogger.Emitter import Emitter
 from MongoDB_Connector import Async_Mongo_Connector
 
+import boto3
+from botocore.client import Config
+import s3_connector as s3
+
 logger = Emitter()
 
 db = Async_Mongo_Connector(ip="10.0.1.235")
+s3 = boto3.resource("s3",
+                    endpoint_url="http://169.254.146.101:9000",
+                    config=Config(signature_version='s3v4'),
+                    region_name='us-east-1')
 # this is the part that the program decode database access requests from
 # RabbitMQ RPC calls and translate them into actual db requests
 
@@ -59,7 +67,7 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
                 db_response = await odc.u_update(payload.get("uid", None), payload.get("modification", None))
 
             elif method == "m.new":
-                db_response = await
+                db_response = odc.m_new(s3, payload.get("media_in_b64", None))
 
             response = {}
 
