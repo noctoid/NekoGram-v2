@@ -86,6 +86,8 @@ class OD_Converter:
         )
         return result
 
+    async def m_new(self, muid, media):
+        pass
 
 
 if __name__ == "__main__":

@@ -29,7 +29,8 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
 
             assert method in [
                 'p.get', 'p.new', 'p.update', 'p.remove',
-                'u.get_plist', 'u.get', 'u.auth', 'u.new', 'u.remove', 'u.update', 'u.freeze'
+                'u.get_plist', 'u.get', 'u.auth', 'u.new', 'u.remove', 'u.update', 'u.freeze',
+                'm.new', 'm.remove'
             ]
             assert type(payload) == dict
 
@@ -56,6 +57,9 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
                 db_response = await odc.u_remove(payload.get("list_of_uid", []))
             elif method == "u.update":
                 db_response = await odc.u_update(payload.get("uid", None), payload.get("modification", None))
+
+            elif method == "m.new":
+                db_response = await
 
             response = {}
 
