@@ -34,7 +34,6 @@ async def new_media(s3, media_id, bytes_in_b64):
 
 async def remove_media(s3, media_key):
     result = s3.Object('media', media_key).delete()
-    print("walala")
 
 
 # uid = str(uuid4())
