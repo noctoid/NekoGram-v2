@@ -5,7 +5,7 @@ from uuid import uuid4
 
 
 # from mongodb_connector import Async_Mongo_Connector
-from s3_connector import new_media
+from s3_connector import new_media, remove_media
 
 class OD_Converter:
     # def __init__(self, db, obj_requested=None, method=None, query=None):
@@ -95,6 +95,11 @@ class OD_Converter:
             return {"media_url": result}
         else:
             return {"status": "403", "message": "not a valid media file"}
+
+    async def m_remove(self, s3, media_key):
+        result = await remove_media(s3, media_key)
+        return {"status": "200", "message": "done"}
+
 
 
 if __name__ == "__main__":

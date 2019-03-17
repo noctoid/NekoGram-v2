@@ -32,8 +32,9 @@ async def new_media(s3, media_id, bytes_in_b64):
         s3.Bucket("media").upload_fileobj(fileLikeObj, file_key, ExtraArgs={"ACL": "public-read"})
         return "http://169.254.146.101:9000/media/"+file_key
 
-def remove_media(media_key):
-    pass
+async def remove_media(s3, media_key):
+    result = s3.Object('media', media_key).delete()
+    print("walala")
 
 
 # uid = str(uuid4())

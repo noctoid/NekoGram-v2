@@ -68,6 +68,8 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
 
             elif method == "m.new":
                 db_response = await odc.m_new(s3, payload.get("media_in_b64", None))
+            elif method == "m.remove":
+                db_response = await odc.m_remove(s3, payload.get("media_key", None))
 
             response = {}
 
