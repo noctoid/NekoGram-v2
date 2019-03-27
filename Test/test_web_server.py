@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
 
     print("\n\nTest Create P\n")
-    pid = "00000000-1111-2222-3333-000000000000"
+    pid = "00000000-1111-2222-3333-000000001234"
 
     result = post(
         "http://127.0.0.1:8000/p/create/",
@@ -104,6 +104,7 @@ if __name__ == "__main__":
             }
         }
     )
+    print("\n===== Modified P =====")
     pprint.pprint(json.loads(post(
         "http://127.0.0.1:8000/p/read/",
         headers,
@@ -113,8 +114,20 @@ if __name__ == "__main__":
     )))
 
 
+    print("\n\nTest Read User 2 After New Post\n")
 
-    print("\n\nTest Delete User\n")
+    result = json.loads(post(
+        "http://127.0.0.1:8000/u/read/",
+        headers,
+        {
+            "username": "testuser1"
+        }
+    ))
+    user = result['result']
+    print(user)
+
+
+    print("\n\nTest Delete Postings\n")
     result = post(
         "http://127.0.0.1:8000/p/delete/",
         headers,

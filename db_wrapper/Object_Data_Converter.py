@@ -39,7 +39,8 @@ class OD_Converter:
         result = await self.mongo_client.InsertByKeyValue(
             "user_content", "postings", P
         )
-        return {"status": 200}
+        print(P["pid"])
+        return {"status": 200, "pid": P["pid"]}
 
     async def p_update(self, pid, modification):
         result = await self.mongo_client.updateByKeyValue(
@@ -86,7 +87,13 @@ class OD_Converter:
         result = await self.mongo_client.updateByKeyValue(
             "user_content", "profiles", "uid", uid, modification
         )
-        return result
+        return {"status": 200, "message": "user updated"}
+
+    async def u_update_postings(self, uid, modification):
+        result = await self.mongo_client.insertToListByKeyValue(
+            "user_content", "profiles", "uid", uid, modification
+        )
+        return {"status": 200, "message": "user postings updated"}
 
     async def m_new(self, s3, media):
         media_id = str(uuid4())

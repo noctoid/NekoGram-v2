@@ -4,6 +4,7 @@ from uuid import uuid4
 from Q_Connector import AsyncPersistenceConnector
 from Models import Posting, User
 from settings import Q_API_VER
+import json
 
 class RequestHandler:
     def __init__(self):
@@ -51,7 +52,15 @@ class RequestHandler:
 
     async def create_postings(self, P:Posting):
         payload = {"new_post": P.to_dict()}
-        return await self.exec("p.new", payload)
+        # return await self.exec("p.new", payload)
+        result = await self.exec("p.new", payload)
+        result = json.loads(result)['result']
+        print("shenmejiba", result)
+        status, new_pid, uid = result['status'], result['pid'], P.get_uid()
+        update_user_result = await self.update_user(uid, {"postings":new_pid})
+        print("!!!!",update_user_result)
+
+        return {"status": 200, "message": "success"}
 
     async def create_user(self, U:User):
         payload = {"new_user": U.to_dict()}
@@ -73,6 +82,14 @@ class RequestHandler:
             "modification": modification
         }
         return await self.exec("u.update", payload)
+
+    async def update_user_postings(self, uid, modification):
+        payload = {
+            "uid": uid,
+            "modification": modification
+        }
+        return await self.exec("u.update_postings", payload)
+
 
     async def delete_user(self, uid):
         return await self.exec("u.remove", {"list_of_uid": [uid]})

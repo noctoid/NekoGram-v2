@@ -78,6 +78,12 @@ class Posting:
     def json(self):
         return json.dumps(self.to_dict())
 
+    def get_pid(self):
+        return self.p["pid"]
+
+    def get_uid(self):
+        return self.p["uid"]
+
 
 
 if __name__ == "__main__":

@@ -94,30 +94,30 @@ async def p_read_many(request):
 async def p_create(request):
     # logic = RequestHandler()
     print(request.json)
-    try:
-        query = request.json
+    # try:
+    query = request.json
 
-        if DEV:
-            result = await logic.create_postings(
-                Posting(
-                    pid=str(query["pid"]),
-                    uid=str(query['uid']),
-                    type=str(query["type"]),
-                    content=query['content'],
-                    public=bool(query["public"])
-                )
+    if DEV:
+        result = await logic.create_postings(
+            Posting(
+                pid=str(query["pid"]),
+                uid=str(query['uid']),
+                type=str(query["type"]),
+                content=query['content'],
+                public=bool(query["public"])
             )
-        else:
-            result = await logic.create_postings(
-                Posting(
-                    uid=str(query['uid']),
-                    type=str(query["type"]),
-                    content=query['content'],
-                    public=bool(query["public"])
-                )
+        )
+    else:
+        result = await logic.create_postings(
+            Posting(
+                uid=str(query['uid']),
+                type=str(query["type"]),
+                content=query['content'],
+                public=bool(query["public"])
             )
-    except (ValueError, IndexError, KeyError):
-        return json({"status": "bad request"}, status=400)
+        )
+    # except (ValueError, IndexError, KeyError):
+    #     return json({"status": "bad request"}, status=400)
     return json(j.loads(result))
 
 @app.route("/p/update/", methods=['OPTIONS', 'POST'])

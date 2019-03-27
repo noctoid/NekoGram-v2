@@ -29,6 +29,10 @@ class Async_Mongo_Connector:
         status = await self.client[db][colle].find_one_and_update({key:value}, {"$set": modification})
         return status
 
+    async def insertToListByKeyValue(self, db, colle, key, value, modification):
+        status = await self.client[db][colle].find_one_and_update({key:value}, {"$push": modification})
+        return status
+
     async def deleteByKeyValue(self, db, colle, key, value):
         status = await self.client[db][colle].find_one_and_delete({key: value})
         return status

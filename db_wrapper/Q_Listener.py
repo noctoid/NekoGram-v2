@@ -65,6 +65,8 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
                 db_response = await odc.u_remove(payload.get("list_of_uid", []))
             elif method == "u.update":
                 db_response = await odc.u_update(payload.get("uid", None), payload.get("modification", None))
+            elif method == "u.update_postings":
+                db_response = await odc.u_update_user_postings(payload.get("uid", None), payload.get("modification", None))
 
             elif method == "m.new":
                 db_response = await odc.m_new(s3, payload.get("media_in_b64", None))
