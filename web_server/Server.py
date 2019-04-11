@@ -3,9 +3,12 @@
 from sanic import Sanic
 from sanic_cors import CORS, cross_origin
 from sanic.response import json
+
 from sanic_jwt import exceptions
 from sanic_jwt import initialize
 from sanic_jwt.decorators import protected
+from sanic_jwt import Authentication
+
 from jwt import decode as jwt_decode
 
 import json as j
@@ -20,6 +23,49 @@ DEV = True
 
 logic = RequestHandler()
 
+# class User:
+#
+#     def __init__(self, id, username, password):
+#         self.user_id = id
+#         self.username = username
+#         self.password = password
+#
+#     def __repr__(self):
+#         return "User(id='{}')".format(self.user_id)
+#
+#     def to_dict(self):
+#         return {"user_id": self.user_id, "username": self.username}
+#
+#
+# users = [User(1, "noctoid", "qwer1234"), User(2, "user2", "abcxyz")]
+#
+# username_table = {u.username: u for u in users}
+# userid_table = {u.user_id: u for u in users}
+#
+#
+# class MyAuthentication(Authentication):
+#
+#     async def extend_payload(self, payload, *args, **kwargs):
+#         payload.update({"app_name": self.app.name})
+#         return payload
+#
+#     async def authenticate(self, request, *args, **kwargs):
+#         username = request.json.get("username", None)
+#         password = request.json.get("password", None)
+#
+#         if not username or not password:
+#             raise exceptions.AuthenticationFailed(
+#                 "Missing username or password."
+#             )
+#
+#         user = username_table.get(username, None)
+#         if user is None:
+#             raise exceptions.AuthenticationFailed("User not found.")
+#
+#         if password != user.password:
+#             raise exceptions.AuthenticationFailed("Password is incorrect.")
+#
+#         return user
 
 async def authenticate(request, *args, **kwargs):
     # print(request.json)
@@ -52,6 +98,17 @@ CORS(app)
 async def test(request):
     print(jwt_decode(request.headers['authorization'][7:], "secret"))
     return json({"Neko": "Gram!"})
+
+
+@app.route("/user", methods=['GET','POST', 'OPTIONS'])
+@protected()
+async def user_cred(request):
+    print("!!!")
+    print(jwt_decode(request.headers['authorization'][7:], "secret"))
+    return json({
+        "userid": jwt_decode(request.headers['authorization'][7:], "secret"),
+        "username": "noctoid"
+    })
 
 
 
