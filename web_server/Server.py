@@ -93,10 +93,11 @@ initialize(app, authenticate=authenticate, secret="secret")
 CORS(app)
 
 
-@app.route("/")
+@app.route("/", methods=['GET','POST', 'OPTIONS'])
 @protected()
 async def test(request):
-    print(jwt_decode(request.headers['authorization'][7:], "secret"))
+    # print(jwt_decode(request.headers['authorization'][7:], "secret"))
+    print(request.json)
     return json({"Neko": "Gram!"})
 
 
@@ -206,11 +207,11 @@ async def p_delete(request):
 async def p_search(request):
     return json({"body": "soooooooooon"}, status=200)
 
-@app.route("/p/u_get_plist", methods=['OPTIONS', 'POST'])
+@app.route("/p/u_get_plist/", methods=['OPTIONS', 'POST'])
 @protected()
 async def p_user_plist(request):
     if DEV:
-        print(request.json)
+        print("p_user_plist: "+ request.json)
 
     try:
         query = request.json
@@ -219,7 +220,7 @@ async def p_user_plist(request):
         )
     except (ValueError, IndexError, KeyError):
         return json({"status": "bad request"}, status=400)
-    return json(j.loads(result))
+    return json(j.loads(result), status=200)
 
 
 @app.route("/u/create/", methods=['OPTIONS', 'POST'])
@@ -242,6 +243,7 @@ async def u_create(request):
 @app.route("/u/read/", methods=['OPTIONS', 'POST'])
 @protected()
 async def u_read_info(request):
+    # return json([{'id': 1, 'username': 'test', 'password': 'test', 'firstName': 'Test', 'lastName': 'User'}])
     try:
         query = request.json
         # print(query)
@@ -251,7 +253,6 @@ async def u_read_info(request):
     except (ValueError, IndexError, KeyError):
         return json({"status": "bad request"}, status=400)
     return json(j.loads(result))
-
 @app.route("/u/update/", methods=['OPTIONS', 'POST'])
 async def u_update(request):
     print(request.json)

@@ -52,6 +52,7 @@ if __name__ == "__main__":
             "username": "testuser1"
         }
     ))
+
     user = result['result']
     print(user)
 
