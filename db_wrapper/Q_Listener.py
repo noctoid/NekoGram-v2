@@ -37,7 +37,7 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
 
             assert method in [
                 'p.get', 'p.new', 'p.update', 'p.remove',
-                'u.get_plist', 'u.get', 'u.auth', 'u.new', 'u.remove', 'u.update', 'u.freeze',
+                'u.get_plist', 'u.get', 'u.auth', 'u.new', 'u.remove', 'u.update', 'u.update_postings', 'u.freeze',
                 'm.new', 'm.remove'
             ]
             assert type(payload) == dict
@@ -66,7 +66,7 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
             elif method == "u.update":
                 db_response = await odc.u_update(payload.get("uid", None), payload.get("modification", None))
             elif method == "u.update_postings":
-                db_response = await odc.u_update_user_postings(payload.get("uid", None), payload.get("modification", None))
+                db_response = await odc.u_update_postings(payload.get("uid", None), payload.get("modification", None))
 
             elif method == "m.new":
                 db_response = await odc.m_new(s3, payload.get("media_in_b64", None))

@@ -176,8 +176,8 @@ async def p_create(request):
         )
     # except (ValueError, IndexError, KeyError):
     #     return json({"status": "bad request"}, status=400)
-    return json(j.loads(result))
-
+    # return json(j.loads(result))
+    return json(result)
 @app.route("/p/update/", methods=['OPTIONS', 'POST'])
 async def p_update(request):
     print(request.json)
@@ -207,13 +207,12 @@ async def p_delete(request):
 async def p_search(request):
     return json({"body": "soooooooooon"}, status=200)
 
-@app.route("/p/u_get_plist/", methods=['OPTIONS', 'POST'])
+@app.route("/api/p/u_get_plist/", methods=['GET', 'OPTIONS', 'POST'])
 @protected()
 async def p_user_plist(request):
-    if DEV:
-        print("p_user_plist: "+ request.json)
-
     try:
+        if DEV:
+            print("p_user_plist: ", request.json)
         query = request.json
         result = await logic.list_user_postings(
             query['username']

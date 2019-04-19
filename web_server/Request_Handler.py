@@ -57,7 +57,7 @@ class RequestHandler:
         result = json.loads(result)['result']
         print("shenmejiba", result)
         status, new_pid, uid = result['status'], result['pid'], P.get_uid()
-        update_user_result = await self.update_user(uid, {"postings":new_pid})
+        update_user_result = await self.update_user_postings(uid, {"postings":new_pid})
         print("!!!!",update_user_result)
 
         return {"status": 200, "message": "success"}
@@ -82,6 +82,7 @@ class RequestHandler:
             "modification": modification
         }
         return await self.exec("u.update", payload)
+
 
     async def update_user_postings(self, uid, modification):
         payload = {

@@ -91,4 +91,5 @@ if __name__ == "__main__":
     posting = Posting(uid=str(uuid4()), type="posting", content={"txt": "test!"})
     print(posting)
     pp(posting.to_dict())
+    print(posting.get_uid())
     print(posting.json())
