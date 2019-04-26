@@ -72,6 +72,13 @@ class OD_Converter:
         )
         return result
 
+    async def u_get_by_id(self, uid):
+        result = await self.mongo_client.findByKeyValue(
+            "user_content", "profiles", "uid", uid
+        )
+        print(result)
+        return result
+
     async def u_get_plist(self, username):
         user = await self.u_get(username)
         return user['postings']

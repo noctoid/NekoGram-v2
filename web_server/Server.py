@@ -11,6 +11,8 @@ from sanic_jwt import Authentication
 
 from jwt import decode as jwt_decode
 
+from base64 import b64encode
+
 import json as j
 
 import asyncio
@@ -22,6 +24,7 @@ from Models import Posting, User
 DEV = True
 
 logic = RequestHandler()
+
 
 # class User:
 #
@@ -93,7 +96,7 @@ initialize(app, authenticate=authenticate, secret="secret")
 CORS(app)
 
 
-@app.route("/", methods=['GET','POST', 'OPTIONS'])
+@app.route("/", methods=['GET', 'POST', 'OPTIONS'])
 @protected()
 async def test(request):
     # print(jwt_decode(request.headers['authorization'][7:], "secret"))
@@ -101,7 +104,7 @@ async def test(request):
     return json({"Neko": "Gram!"})
 
 
-@app.route("/user", methods=['GET','POST', 'OPTIONS'])
+@app.route("/user", methods=['GET', 'POST', 'OPTIONS'])
 @protected()
 async def user_cred(request):
     print("!!!")
@@ -112,9 +115,7 @@ async def user_cred(request):
     })
 
 
-
-
-@app.route("/p/read/", methods=['POST', 'OPTIONS'])
+@app.route("/api/p/read/", methods=['POST', 'OPTIONS'])
 @protected()
 async def p_read(request):
     # form = request.form
@@ -129,6 +130,7 @@ async def p_read(request):
 
     print(result)
     return json(j.loads(result))
+
 
 @app.route("/p/read_many/", methods=['POST', 'OPTIONS'])
 @protected()
@@ -146,6 +148,36 @@ async def p_read_many(request):
     if DEV:
         print(result)
     return json(j.loads(result))
+
+
+@app.route("/api/p/read_my_posts/", methods=['POST', 'OPTIONS'])
+@protected()
+async def p_read_my_posts(request):
+    if DEV:
+        print(request.json)
+
+    # get user's all postings first
+    my_pids = await logic.list_user_postings(
+        request.json['username']
+    )
+    my_pids = j.loads(my_pids)
+    if my_pids["status"] == "done":
+        my_pids = my_pids['result']
+    else:
+        return json({"status": "error", "message": "no such user"}, status=404)
+
+    # then get all posting content
+    result = await logic.get_postings_batch(my_pids)
+    result = j.loads(result)
+
+    if DEV:
+        print(result)
+
+    # except (ValueError, IndexError, KeyError):
+    #     return json({"status": "bad request"}, status=400)
+
+    return json(result)
+
 
 @app.route("/p/create/", methods=['POST', 'OPTIONS'])
 @protected()
@@ -178,6 +210,8 @@ async def p_create(request):
     #     return json({"status": "bad request"}, status=400)
     # return json(j.loads(result))
     return json(result)
+
+
 @app.route("/p/update/", methods=['OPTIONS', 'POST'])
 async def p_update(request):
     print(request.json)
@@ -192,6 +226,7 @@ async def p_update(request):
         return json({"status": "bad request"}, status=400)
     return json(j.loads(result))
 
+
 @app.route("/p/delete/", methods=['OPTIONS', 'POST'])
 async def p_delete(request):
     try:
@@ -203,9 +238,11 @@ async def p_delete(request):
         return json({"status": "bad request"}, status=400)
     return json(j.loads(result))
 
+
 @app.route("/p/search/", methods=['OPTIONS', 'POST'])
 async def p_search(request):
     return json({"body": "soooooooooon"}, status=200)
+
 
 @app.route("/api/p/u_get_plist/", methods=['GET', 'OPTIONS', 'POST'])
 @protected()
@@ -239,19 +276,22 @@ async def u_create(request):
         return json({"status": "bad request"}, status=400)
     return json(j.loads(result))
 
-@app.route("/u/read/", methods=['OPTIONS', 'POST'])
+
+@app.route("/api/u/read/", methods=['OPTIONS', 'POST'])
 @protected()
-async def u_read_info(request):
+async def u_read(request):
     # return json([{'id': 1, 'username': 'test', 'password': 'test', 'firstName': 'Test', 'lastName': 'User'}])
+    if DEV: print(request.json)
     try:
-        query = request.json
-        # print(query)
-        result = await logic.get_user(
-            query['username']
-        )
-    except (ValueError, IndexError, KeyError):
+        username = request.json.get("username", None)
+        result = await logic.get_user(username)
+        # print("user -> ", result)
+    except (ValueError, KeyError, IndexError):
         return json({"status": "bad request"}, status=400)
-    return json(j.loads(result))
+    return json(j.loads(result), status=200)
+    # return json(j.loads(result))
+
+
 @app.route("/u/update/", methods=['OPTIONS', 'POST'])
 async def u_update(request):
     print(request.json)
@@ -266,6 +306,7 @@ async def u_update(request):
         return json({"status": "bad request"}, status=400)
     return json(j.loads(result))
 
+
 @app.route("/u/delete/", methods=["OPTIONS", "POST"])
 @protected()
 async def u_delete(request):
@@ -277,6 +318,7 @@ async def u_delete(request):
     except (ValueError, IndexError, KeyError):
         return json({"status": "bad request"}, status=400)
     return json(j.loads(result))
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)

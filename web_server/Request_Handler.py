@@ -70,6 +70,9 @@ class RequestHandler:
         payload = {"username": username} #nickname for now change later
         return await self.exec("u.get", payload)
 
+    async def get_user_by_id(self, uid):
+        return await self.exec("u.get_by_id", {"uid": uid})
+
     async def list_user_postings(self, username):
         payload = {
             "username": username
