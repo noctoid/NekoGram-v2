@@ -13,6 +13,8 @@ from jwt import decode as jwt_decode
 
 from base64 import b64encode
 
+from uuid import uuid4
+
 import json as j
 
 import asyncio
@@ -21,9 +23,14 @@ import asyncio
 from Request_Handler import RequestHandler
 from Models import Posting, User
 
+from NekoGram_Media_Uploader.initiator import Initiator
+
 DEV = True
 
 logic = RequestHandler()
+
+initiator = Initiator()
+
 
 
 # class User:
@@ -179,7 +186,7 @@ async def p_read_my_posts(request):
     return json(result)
 
 
-@app.route("/p/create/", methods=['POST', 'OPTIONS'])
+@app.route("/api/p/create/", methods=['POST', 'OPTIONS'])
 @protected()
 async def p_create(request):
     # logic = RequestHandler()
@@ -188,15 +195,25 @@ async def p_create(request):
     query = request.json
 
     if DEV:
-        result = await logic.create_postings(
-            Posting(
-                pid=str(query["pid"]),
-                uid=str(query['uid']),
-                type=str(query["type"]),
-                content=query['content'],
-                public=bool(query["public"])
+        try:
+            result = await logic.create_postings(
+                Posting(
+                    pid=str(query["pid"]),
+                    uid=str(query['uid']),
+                    type=str(query["type"]),
+                    content=query['content'],
+                    public=bool(query["public"])
+                )
             )
-        )
+        except KeyError:
+            result = await logic.create_postings(
+                Posting(
+                    uid=str(query['uid']),
+                    type=str(query["type"]),
+                    content=query['content'],
+                    public=bool(query["public"])
+                )
+            )
     else:
         result = await logic.create_postings(
             Posting(
@@ -210,6 +227,29 @@ async def p_create(request):
     #     return json({"status": "bad request"}, status=400)
     # return json(j.loads(result))
     return json(result)
+
+@app.route("/api/p/new_media/", methods=["POST", "OPTIONS"])
+@protected()
+async def new_media(request):
+    if DEV:
+        print(request.json)
+    try:
+        data = request.json.get("data", None)
+        if data:
+            await initiator.connect(asyncio.get_event_loop())
+            _, data = data.split(",")
+            mediaUrl = str(uuid4())
+            await initiator.emit(data, mediaUrl)
+            return json({"status": "done", "result": "media/"+mediaUrl})
+        else:
+            return json({"status": "error", "message": "not valid media file"}, status=400)
+
+
+    except (ValueError, IndexError, KeyError):
+        return json({"status": "bad request"}, status=400)
+
+
+    return json({"mediaUrl": "https://example.com/sample.png"})
 
 
 @app.route("/p/update/", methods=['OPTIONS', 'POST'])
