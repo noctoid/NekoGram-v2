@@ -332,18 +332,23 @@ async def u_read(request):
     # return json(j.loads(result))
 
 
-@app.route("/u/update/", methods=['OPTIONS', 'POST'])
+@app.route("/api/u/update/", methods=['OPTIONS', 'POST'])
 async def u_update(request):
     print(request.json)
-    try:
-        query = request.json
-
-        result = await logic.update_user(
-            str(query["uid"]),
-            query['modification']
-        )
-    except (ValueError, IndexError, KeyError):
-        return json({"status": "bad request"}, status=400)
+    # try:
+    query = request.json
+    username = request.json.get("username", None)
+    profile = await logic.get_user(username)
+    profile = j.loads(profile)["result"]
+    for key in request.json:
+        if request.json[key]:
+            profile[key] = request.json[key]
+    result = await logic.update_user(
+        str(profile["uid"]),
+        profile
+    )
+    # except (ValueError, IndexError, KeyError):
+    #     return json({"status": "bad request"}, status=400)
     return json(j.loads(result))
 
 

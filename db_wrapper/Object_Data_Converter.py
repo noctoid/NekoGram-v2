@@ -32,7 +32,25 @@ class OD_Converter:
             )
             elem.pop("_id")
             result.append(elem)
+        list_of_uid = [posting["uid"] for posting in result]
+        authors = await self.p_get_author_info(list_of_uid)
+        for r in result:
+            r["username"] = authors[r["uid"]]["username"]
+            r["displayName"] = authors[r["uid"]]["displayName"]
+            r["avatarUrl"] = authors[r["uid"]]["avatarUrl"]
         print("DB->", result)
+        return result
+
+    async def p_get_author_info(self, list_of_uid):
+        result = {}
+        for uid in list_of_uid:
+            if uid not in result:
+                user = await self.u_get_by_id(uid)
+                result[uid] = {
+                    "username": user["username"],
+                    "displayName": user["displayName"],
+                    "avatarUrl": user["avatarUrl"]
+                }
         return result
 
     async def p_new(self, P):
