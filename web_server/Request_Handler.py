@@ -47,7 +47,8 @@ class RequestHandler:
             }
         )
 
-    async def delete_postings(self, pid):
+    async def delete_postings(self, uid, pid):
+        result = await self.update_user_postings_after_delete(uid, {"postings": pid})
         return await self.exec("p.remove", {"list_of_pid":[pid]})
 
     async def create_postings(self, P:Posting):
@@ -93,6 +94,13 @@ class RequestHandler:
             "modification": modification
         }
         return await self.exec("u.update_postings", payload)
+
+    async def update_user_postings_after_delete(self, uid, modification):
+        payload = {
+            "uid": uid,
+            "modification": modification
+        }
+        return await self.exec("u.update_postings_after_delete", payload)
 
 
     async def delete_user(self, uid):

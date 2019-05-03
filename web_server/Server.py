@@ -99,7 +99,12 @@ async def authenticate(request, *args, **kwargs):
 
 
 app = Sanic()
-initialize(app, authenticate=authenticate, secret="secret")
+initialize(
+    app,
+    authenticate=authenticate,
+    url_prefix="/api/auth",
+    secret="secret"
+)
 CORS(app)
 
 
@@ -267,13 +272,17 @@ async def p_update(request):
     return json(j.loads(result))
 
 
-@app.route("/p/delete/", methods=['OPTIONS', 'POST'])
+@app.route("/api/p/delete/", methods=['OPTIONS', 'POST'])
 async def p_delete(request):
     try:
         query = request.json
+
         if DEV:
             print(query)
-        result = await logic.delete_postings(str(query["pid"]))
+
+        pid = str(query.get("pid", None))
+        uid = str(query.get("uid", None))
+        result = await logic.delete_postings(uid, pid)
     except (ValueError, IndexError, KeyError):
         return json({"status": "bad request"}, status=400)
     return json(j.loads(result))
@@ -282,6 +291,11 @@ async def p_delete(request):
 @app.route("/p/search/", methods=['OPTIONS', 'POST'])
 async def p_search(request):
     return json({"body": "soooooooooon"}, status=200)
+
+@app.route("/api/like/", methods=['OPTIONS', 'POST'])
+@protected()
+async def like_by_pid(request):
+    return json({"hi": "foobar"})
 
 
 @app.route("/api/p/u_get_plist/", methods=['GET', 'OPTIONS', 'POST'])

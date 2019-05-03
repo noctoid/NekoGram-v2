@@ -120,6 +120,13 @@ class OD_Converter:
         )
         return {"status": 200, "message": "user postings updated"}
 
+    async def u_update_postings_after_delete(self, uid, modification):
+        result = await self.mongo_client.pullToListByKeyValue(
+            "user_content", "profiles", "uid", uid, modification
+        )
+        print(result)
+        return {"status": 200, "message": "user postings updated"}
+
     async def m_new(self, s3, media):
         media_id = str(uuid4())
         result = await new_media(s3, media_id, media)
