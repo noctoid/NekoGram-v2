@@ -32,51 +32,6 @@ logic = RequestHandler()
 initiator = Initiator()
 
 
-
-# class User:
-#
-#     def __init__(self, id, username, password):
-#         self.user_id = id
-#         self.username = username
-#         self.password = password
-#
-#     def __repr__(self):
-#         return "User(id='{}')".format(self.user_id)
-#
-#     def to_dict(self):
-#         return {"user_id": self.user_id, "username": self.username}
-#
-#
-# users = [User(1, "noctoid", "qwer1234"), User(2, "user2", "abcxyz")]
-#
-# username_table = {u.username: u for u in users}
-# userid_table = {u.user_id: u for u in users}
-#
-#
-# class MyAuthentication(Authentication):
-#
-#     async def extend_payload(self, payload, *args, **kwargs):
-#         payload.update({"app_name": self.app.name})
-#         return payload
-#
-#     async def authenticate(self, request, *args, **kwargs):
-#         username = request.json.get("username", None)
-#         password = request.json.get("password", None)
-#
-#         if not username or not password:
-#             raise exceptions.AuthenticationFailed(
-#                 "Missing username or password."
-#             )
-#
-#         user = username_table.get(username, None)
-#         if user is None:
-#             raise exceptions.AuthenticationFailed("User not found.")
-#
-#         if password != user.password:
-#             raise exceptions.AuthenticationFailed("Password is incorrect.")
-#
-#         return user
-
 async def authenticate(request, *args, **kwargs):
     # print(request.json)
     username = request.json.get("username", None)
@@ -251,6 +206,7 @@ async def p_create(request):
     # return json(j.loads(result))
     return json(result)
 
+
 @app.route("/api/p/new_media/", methods=["POST", "OPTIONS"])
 @protected()
 async def new_media(request):
@@ -263,16 +219,13 @@ async def new_media(request):
             _, data = data.split(",")
             mediaUrl = str(uuid4())
             await initiator.emit(data, mediaUrl)
-            return json({"status": "done", "result": "media/"+mediaUrl})
+            return json({"status": "done", "result": "media/" + mediaUrl})
         else:
             return json({"status": "error", "message": "not valid media file"}, status=400)
 
 
     except (ValueError, IndexError, KeyError):
         return json({"status": "bad request"}, status=400)
-
-
-    return json({"mediaUrl": "https://example.com/sample.png"})
 
 
 @app.route("/p/update/", methods=['OPTIONS', 'POST'])
@@ -309,6 +262,7 @@ async def p_delete(request):
 @app.route("/p/search/", methods=['OPTIONS', 'POST'])
 async def p_search(request):
     return json({"body": "soooooooooon"}, status=200)
+
 
 @app.route("/api/p/like/", methods=['OPTIONS', 'POST'])
 @protected()
