@@ -30,14 +30,26 @@ class OD_Converter:
                 "user_content", "postings",
                 "pid", q
             )
-            elem.pop("_id")
-            result.append(elem)
-        list_of_uid = [posting["uid"] for posting in result]
+            if elem:
+                elem.pop("_id")
+                result.append(elem)
+            else:
+                result.append({"uid":"0", "pid": q, "content": {"txt": "Posting Unavailable"}})
+        print("!!!",result)
+        # list_of_uid = [posting["uid"] for posting in result]
+        list_of_uid = []
+        for posting in result:
+            if posting["uid"] != "0":
+                list_of_uid.append(posting["uid"])
+        print("!!!", list_of_uid)
         authors = await self.p_get_author_info(list_of_uid)
         for r in result:
-            r["username"] = authors[r["uid"]]["username"]
-            r["displayName"] = authors[r["uid"]]["displayName"]
-            r["avatarUrl"] = authors[r["uid"]]["avatarUrl"]
+            if r['uid'] == "0":
+                pass
+            else:
+                r["username"] = authors[r["uid"]]["username"]
+                r["displayName"] = authors[r["uid"]]["displayName"]
+                r["avatarUrl"] = authors[r["uid"]]["avatarUrl"]
         print("DB->", result)
         return result
 

@@ -182,6 +182,24 @@ async def p_read_my_posts(request):
     result = await logic.get_postings_batch(my_pids)
     result = j.loads(result)
 
+    # then fill in liked root content
+    # 1. get a list of likes and reposts pid
+    need_root_content_pids = [r['root'] for r in result['result'] if r['root']]
+    print("1->", need_root_content_pids)
+    # 2. get content for the list of pids
+    root_contents = j.loads(await logic.get_postings_batch(need_root_content_pids))['result']
+    print("2->", root_contents)
+    # 3. fill in the root content
+    root_contents_map_to_pid = {}
+    for root_content in root_contents:
+        root_contents_map_to_pid[root_content['pid']] = root_content
+    for r in result['result']:
+        if r['root']:
+            r['root_content'] = root_contents_map_to_pid[r['root']]
+
+    # 4. reverse chronological order
+    result['result'].reverse()
+
     if DEV:
         print(result)
 
