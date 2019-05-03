@@ -292,9 +292,18 @@ async def p_delete(request):
 async def p_search(request):
     return json({"body": "soooooooooon"}, status=200)
 
-@app.route("/api/like/", methods=['OPTIONS', 'POST'])
+@app.route("/api/p/like/", methods=['OPTIONS', 'POST'])
 @protected()
 async def like_by_pid(request):
+    if DEV:
+        print(request.json)
+    try:
+        pid = request.json.get("pid", None)
+        uid = request.json.get("uid", None)
+        result = await logic.like(uid, pid)
+
+    except (ValueError, IndexError, KeyError):
+        return json({"status": "bad request", "request": request.json}, status=400)
     return json({"hi": "foobar"})
 
 

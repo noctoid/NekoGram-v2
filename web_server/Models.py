@@ -46,7 +46,7 @@ class User:
 class Posting:
     def __init__(
             self,
-            pid="", uid="", type="", content={},
+            pid="", uid="", type="", content={}, root="",
             comments=[], likes=[], repost=[], public=True
             ):
         self.p = {}
@@ -57,6 +57,7 @@ class Posting:
         self.p["repost"] = repost
         self.p["public"] = public
         self.p["content"] = content
+        self.p["root"] = root
         if pid:
             self.p["pid"] = pid
         else:

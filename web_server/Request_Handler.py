@@ -102,6 +102,30 @@ class RequestHandler:
         }
         return await self.exec("u.update_postings_after_delete", payload)
 
+    async def update_p_new_like(self, pid, like_pid):
+        return await self.exec(
+            "p.update_after_like",
+            {
+                "pid": pid,
+                "modification": {"likes": like_pid}
+            }
+        )
 
     async def delete_user(self, uid):
         return await self.exec("u.remove", {"list_of_uid": [uid]})
+
+    async def like(self, uid, pid):
+        # compose new like posting
+        like_post = Posting(uid=uid, type="like", root=pid)
+        payload = {"new_post": like_post.to_dict()}
+        # create new posting / p.new
+        result = await self.exec("p.new", payload)
+        result = json.loads(result)['result']
+        # update author posting list
+        status, new_pid, uid = result['status'], result['pid'], like_post.get_uid()
+        update_user_result = await self.update_user_postings(uid, {"postings": new_pid})
+        # update liked posting liked list
+        update_like_result = await self.update_p_new_like(pid, new_pid)
+
+
+        return {"status": 200, "message": "success"}

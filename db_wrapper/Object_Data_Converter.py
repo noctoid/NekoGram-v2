@@ -73,6 +73,12 @@ class OD_Converter:
             )
         return {"status": 200}
 
+    async def p_update_after_like(self, pid, modification):
+        result = await self.mongo_client.insertToListByKeyValue(
+            "user_content", "postings", "pid", pid, modification
+        )
+        return {"status": 200, "message": "user postings updated"}
+
     async def u_new(self, new_user):
         isUserExist = await self.mongo_client.findByKeyValue(
             "user_content", "profiles", "username", new_user["username"]

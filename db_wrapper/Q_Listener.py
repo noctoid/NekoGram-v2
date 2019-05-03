@@ -37,10 +37,11 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
             payload = req.get('payload', None)
 
             assert method in [
-                'p.get', 'p.new', 'p.update', 'p.remove',
-                'u.get_plist', 'u.get', 'u.get_by_id', 'u.auth', 'u.new', 'u.remove', 'u.update', 'u.update_postings',
-                'u.update_postings_after_delete',
-                'u.freeze',
+                'p.get', 'p.new', 'p.update', 'p.remove', 'p.update_after_like',
+
+                'u.get_plist', 'u.get', 'u.get_by_id', 'u.auth', 'u.new', 'u.remove',
+                'u.update', 'u.update_postings', 'u.update_postings_after_delete', 'u.freeze',
+
                 'm.new', 'm.remove'
             ]
             assert type(payload) == dict
@@ -55,6 +56,8 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
                 db_response = await odc.p_update(payload.get("pid", None), payload.get('modification', None))
             elif method == "p.remove":
                 db_response = await odc.p_remove(payload.get('list_of_pid', []))
+            elif method == "p.update_after_like":
+                db_response = await odc.p_update_after_like(payload.get("pid", None), payload.get("modification", {}))
 
             elif method == "u.auth":
                 db_response = await odc.u_auth(payload.get('username', None), payload.get('password', None))
