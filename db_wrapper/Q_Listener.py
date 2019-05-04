@@ -37,10 +37,12 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
             payload = req.get('payload', None)
 
             assert method in [
-                'p.get', 'p.new', 'p.update', 'p.remove', 'p.update_after_like',
+                'p.get', 'p.new', 'p.update', 'p.remove', 'p.update_after_like', 'p.search',
 
                 'u.get_plist', 'u.get', 'u.get_by_id', 'u.auth', 'u.new', 'u.remove',
                 'u.update', 'u.update_postings', 'u.update_postings_after_delete', 'u.freeze',
+
+                'search',
 
                 'm.new', 'm.remove'
             ]
@@ -58,6 +60,8 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
                 db_response = await odc.p_remove(payload.get('list_of_pid', []))
             elif method == "p.update_after_like":
                 db_response = await odc.p_update_after_like(payload.get("pid", None), payload.get("modification", {}))
+            elif method == "p.search":
+                pass
 
             elif method == "u.auth":
                 db_response = await odc.u_auth(payload.get('username', None), payload.get('password', None))
@@ -80,6 +84,8 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
                     payload.get("uid", None),
                     payload.get("modification", None)
                 )
+            elif method == "search":
+                db_response = await odc.search(payload.get("query", None))
 
             elif method == "m.new":
                 db_response = await odc.m_new(s3, payload.get("media_in_b64", None))

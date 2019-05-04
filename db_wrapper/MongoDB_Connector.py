@@ -42,6 +42,13 @@ class Async_Mongo_Connector:
         status = await self.client[db][colle].find_one_and_delete({key: value})
         return status
 
+    async def findByKeyValueApprox(self, db, colle, key, value):
+        cursor = self.client[db][colle].find({key: {"$regex": value}})
+        results = await cursor.to_list(length=10)
+        for result in results:
+            result.pop("_id")
+        return results
+
 if __name__ == "__main__":
     c = Async_Mongo_Connector()
     loop = asyncio.get_event_loop()

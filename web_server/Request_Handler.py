@@ -129,3 +129,11 @@ class RequestHandler:
 
 
         return {"status": 200, "message": "success"}
+
+    async def search(self, query):
+        if query:
+            result = await self.exec("search", {"query": query})
+            result = json.loads(result).get("result", [])
+            return result
+        else:
+            return []

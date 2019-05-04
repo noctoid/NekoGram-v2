@@ -145,6 +145,23 @@ class OD_Converter:
         print(result)
         return {"status": 200, "message": "user postings updated"}
 
+    async def search(self, query):
+        results = \
+            await self.mongo_client.findByKeyValueApprox("user_content", "profiles", "username", query)+ \
+            await self.mongo_client.findByKeyValueApprox("user_content", "profiles", "displayName", query)+ \
+            await self.mongo_client.findByKeyValueApprox("user_content", "postings", "content.txt", query)
+        posting_results = []
+        for result in results:
+            if not result.get("username", None):
+                posting_results.append(result.get("uid", None))
+        author_info = await self.p_get_author_info(posting_results)
+        for r in results:
+            if not r.get("username", None):
+                r["username"] = author_info[r["uid"]]["username"]
+                r["displayName"] = author_info[r["uid"]]["displayName"]
+                r["avatarUrl"] = author_info[r["uid"]]["avatarUrl"]
+        return results
+
     async def m_new(self, s3, media):
         media_id = str(uuid4())
         result = await new_media(s3, media_id, media)

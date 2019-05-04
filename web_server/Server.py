@@ -276,7 +276,7 @@ async def like_by_pid(request):
 
     except (ValueError, IndexError, KeyError):
         return json({"status": "bad request", "request": request.json}, status=400)
-    return json({"hi": "foobar"})
+    return json(result)
 
 
 @app.route("/api/p/u_get_plist/", methods=['GET', 'OPTIONS', 'POST'])
@@ -292,6 +292,27 @@ async def p_user_plist(request):
     except (ValueError, IndexError, KeyError):
         return json({"status": "bad request"}, status=400)
     return json(j.loads(result), status=200)
+
+
+@app.route("/api/search/", methods=["OPTIONS", "POST"])
+@protected()
+async def u_search(request):
+    if DEV: print(request.json)
+
+    try:
+        query = request.json.get("query", None)
+        assert query != None
+
+        response = {"query": query, "result": await logic.search(query)}
+    except (AssertionError):
+        return json({"status": "bad request", "request": request.json}, status=400)
+    return json(response)
+
+
+@app.route('/api/u/follow/', methods=["OPTIONS", "POST"])
+@protected()
+async def u_follow(request):
+    return json({"follow": "user"})
 
 
 @app.route("/u/create/", methods=['OPTIONS', 'POST'])
