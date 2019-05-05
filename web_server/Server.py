@@ -27,6 +27,7 @@ from Models import Posting, User
 from NekoGram_Media_Uploader.initiator import Initiator
 
 from jinja2 import Environment, PackageLoader
+
 env = Environment(loader=PackageLoader('web_server', 'templates'))
 
 DEV = True
@@ -74,7 +75,8 @@ async def test(request):
     print(request.json)
     return json({"Neko": "Gram!"})
 
-@app.route("/register", methods=["GET"])
+
+@app.route("/api/register", methods=["GET"])
 async def register(request):
     template = env.get_template('register.html')
     return html(template.render())
@@ -324,25 +326,50 @@ async def u_follow(request):
     return json({"follow": "user"})
 
 
-@app.route("/u/create/", methods=["GET", 'OPTIONS', 'POST'])
+@app.route("/api/u/create/", methods=["GET", 'OPTIONS', 'POST'])
 async def u_create(request):
     # print(request.json)
     print(request.form)
     try:
         query = request.form
 
+        username = str(query['username'][0])
+        password = str(query['password'][0])
+        displayName = str(query['displayName'][0])
+
+        print(username, password, displayName)
+
+        assert len(username) < 30
+        for char in username: assert char in "abcdefghijklmnopqrstuvwxyz0123456789_"
+        assert len(password) >= 8
+        assert len(password) < 100
+        for char in password: assert char in "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ~!@#$%^&*()_+-=[]{}\\|;:'\",<.>/?"
+        assert len(displayName) < 30
+        assert set(displayName) != {" "}
+
         result = await logic.create_user(
             User(
-                username=str(query['username'][0]),
-                password=str(query['password'][0]),
-                displayName=str(query['displayName'][0])
+                username=username,
+                password=password,
+                displayName=displayName
             )
         )
+        print(result)
+        result = j.loads(result)
 
-    except (ValueError, IndexError, KeyError):
-        return json({"status": "bad request"}, status=400)
-    return json(j.loads(result))
+        if result["status"] == "done" and result["result"]["status"] == 200:
+            template = env.get_template("done.html")
+            return html(template.render())
+        elif result["status"] == "done" and result["result"]["status"] == 403:
+            template = env.get_template("error.html")
+            return html(template.render(message="Username Taken"), status=400)
+        else:
+            template = env.get_template("error.html")
+            return html(template.render(message="Something Went Wrong"), status=400)
 
+    except (ValueError, IndexError, KeyError, AssertionError):
+        template = env.get_template("error.html")
+        return html(template.render(message="Something Went Wrong"), status=400)
 
 @app.route("/api/u/read/", methods=['OPTIONS', 'POST'])
 @protected()
