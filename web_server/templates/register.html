@@ -16,35 +16,63 @@
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
 
-      <script src="https://www.google.com/recaptcha/api.js?render=reCAPTCHA_site_key"></script>
-      <script>
-      grecaptcha.ready(function() {
-          grecaptcha.execute('reCAPTCHA_site_key', {action: 'homepage'}).then(function(token) {
-             ...
-          });
-      });
-      </script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     <title>NekoGram! New User</title>
 </head>
 <body>
+<style>
+    .center-div {
+         margin: 0 auto;
+         width: 75%;
+    }
+</style>
 
-<div class="container">
-    <div class="row">
-        <h1>Register</h1>
-    </div>
-    <div class="row">
-        <form action="../api/u/create/" method="post">
-            <div class="form-group">
-                <input type="text" name="username" placeholder="Username"
-                required="required" pattern="[a-z0-9]{4,30}"/>
-                <input type="password" name="password" placeholder="Password"
-                required="required" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"/>
-                <input type="text" name="displayName" placeholder="Display Name"
-                required="required" pattern="{1,20}"/>
-                <input type="submit"/>
+<div class="container center-div">
+    <div class="panel">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Register</h1><br/>
             </div>
-        </form>
+
+            <form action="../api/u/create/" method="post">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <h5>Username</h5>
+                    </div>
+                    <div class="col-md-12">
+                        <input class="form-control" type="text" name="username"
+                               placeholder="4-30 Characters a-z and 0-9"
+                               required="required" pattern="[a-z0-9]{4,30}"/>
+                    </div>
+                    <hr/>
+                    <div class="col-md-12">
+                        <h5>Password</h5>
+                    </div>
+                    <div class="col-md-12">
+                        <input class="form-control" type="password" name="password"
+                               placeholder="8+ characters a-z, A-Z, 0-9, and special characters"
+                               required="required" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"/>
+                    </div>
+                    <hr/>
+                    <div class="col-md-12">
+                        <h5>Display Name</h5>
+                    </div>
+                    <div class="col-md-12">
+                        <input class="form-control" type="text" name="displayName"
+                               placeholder="20- characters"
+                               required="required" pattern="{1,20}"/>
+                    </div>
+                    <hr/>
+                    <div class="col-md-12">
+                        <div class="g-recaptcha" data-sitekey="6LeoBjcUAAAAAENbMoFhS0-ifpfU7wwaZS3NDTA4"></div>
+                    </div>
+                    <div class="col-md-12">
+                        <input class="form-control" type="submit"/>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 </body>
