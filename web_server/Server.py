@@ -3,6 +3,7 @@
 from sanic import Sanic
 from sanic_cors import CORS, cross_origin
 from sanic.response import json
+from sanic.response import html
 
 from sanic_jwt import exceptions
 from sanic_jwt import initialize
@@ -24,6 +25,9 @@ from Request_Handler import RequestHandler
 from Models import Posting, User
 
 from NekoGram_Media_Uploader.initiator import Initiator
+
+from jinja2 import Environment, PackageLoader
+env = Environment(loader=PackageLoader('web_server', 'templates'))
 
 DEV = True
 
@@ -69,6 +73,11 @@ async def test(request):
     # print(jwt_decode(request.headers['authorization'][7:], "secret"))
     print(request.json)
     return json({"Neko": "Gram!"})
+
+@app.route("/register", methods=["GET"])
+async def register(request):
+    template = env.get_template('register.html')
+    return html(template.render())
 
 
 @app.route("/user", methods=['GET', 'POST', 'OPTIONS'])
@@ -315,19 +324,21 @@ async def u_follow(request):
     return json({"follow": "user"})
 
 
-@app.route("/u/create/", methods=['OPTIONS', 'POST'])
+@app.route("/u/create/", methods=["GET", 'OPTIONS', 'POST'])
 async def u_create(request):
-    print(request.json)
+    # print(request.json)
+    print(request.form)
     try:
-        query = request.json
+        query = request.form
 
         result = await logic.create_user(
             User(
-                username=str(query['username']),
-                password=str(query['password']),
-                displayName=str(query['displayName'])
+                username=str(query['username'][0]),
+                password=str(query['password'][0]),
+                displayName=str(query['displayName'][0])
             )
         )
+
     except (ValueError, IndexError, KeyError):
         return json({"status": "bad request"}, status=400)
     return json(j.loads(result))

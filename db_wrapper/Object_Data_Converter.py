@@ -149,7 +149,9 @@ class OD_Converter:
         results = \
             await self.mongo_client.findByKeyValueApprox("user_content", "profiles", "username", query)+ \
             await self.mongo_client.findByKeyValueApprox("user_content", "profiles", "displayName", query)+ \
-            await self.mongo_client.findByKeyValueApprox("user_content", "postings", "content.txt", query)
+            await self.mongo_client.findByKeyValueApprox("user_content", "postings", "content.txt", query)+ \
+            await self.mongo_client.findByKeyValueApprox("user_content", "profiles", "quote", query)
+
         posting_results = []
         for result in results:
             if not result.get("username", None):
