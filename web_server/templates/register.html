@@ -36,9 +36,12 @@
     <div class="row">
         <form action="../api/u/create/" method="post">
             <div class="form-group">
-                <input type="text" name="username" placeholder="Username"/>
-                <input type="password" name="password" placeholder="Password"/>
-                <input type="text" name="displayName" placeholder="Display Name"/>
+                <input type="text" name="username" placeholder="Username"
+                required="required" pattern="[a-z0-9]{4,30}"/>
+                <input type="password" name="password" placeholder="Password"
+                required="required" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"/>
+                <input type="text" name="displayName" placeholder="Display Name"
+                required="required" pattern="{1,20}"/>
                 <input type="submit"/>
             </div>
         </form>
