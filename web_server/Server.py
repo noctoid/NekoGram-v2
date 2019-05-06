@@ -323,7 +323,32 @@ async def u_search(request):
 @app.route('/api/u/follow/', methods=["OPTIONS", "POST"])
 @protected()
 async def u_follow(request):
-    return json({"follow": "user"})
+    if DEV: print(request.json)
+
+    username_to_follow = request.json.get("username_to_follow", None)
+    username = request.json.get("username", None)
+    assert username_to_follow != None
+
+    response = await logic.u_follow(username, username_to_follow)
+    status = response.get("status", None)
+    result = response.get("result", None)
+
+    return json(result)
+
+@app.route('/api/u/unfollow/', methods=["OPTIONS", "POST"])
+@protected()
+async def u_unfollow(request):
+    if DEV: print(request.json)
+
+    username_to_unfollow = request.json.get("username_to_unfollow", None)
+    username = request.json.get("username", None)
+    assert username_to_unfollow != None
+
+    response = await logic.u_unfollow(username, username_to_unfollow)
+    status = response.get("status", None)
+    result = response.get("result", None)
+
+    return json(result)
 
 
 @app.route("/api/u/create/", methods=["GET", 'OPTIONS', 'POST'])
@@ -378,11 +403,26 @@ async def u_read(request):
     if DEV: print(request.json)
     try:
         username = request.json.get("username", None)
+        my_username = request.json.get("my_username", None)
+
+        print(username, my_username)
         result = await logic.get_user(username)
+        me = await logic.get_user(my_username)
+        me = j.loads(me)
+        my_uid = me["result"]["uid"]
+        result = j.loads(result)
+        print(result)
+        if my_username == username:
+            result["result"]['isFollowing'] = "myself"
+        else:
+            if my_uid in result['result']['followers']:
+                result['result']['isFollowing'] = 'following'
+            else:
+                result['result']['isFollowing'] = 'not_following'
         # print("user -> ", result)
     except (ValueError, KeyError, IndexError):
         return json({"status": "bad request"}, status=400)
-    return json(j.loads(result), status=200)
+    return json(result, status=200)
     # return json(j.loads(result))
 
 
@@ -418,6 +458,10 @@ async def u_delete(request):
         return json({"status": "bad request"}, status=400)
     return json(j.loads(result))
 
+@app.route("/api/u/get_follow/", methods=["OPTIONS", "POST"])
+@protected()
+async def get_follow(request):
+    return json({"follows": ["ichigo"]})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)

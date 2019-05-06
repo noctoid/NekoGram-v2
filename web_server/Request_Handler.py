@@ -6,6 +6,7 @@ from Models import Posting, User
 from settings import Q_API_VER
 import json
 
+
 class RequestHandler:
     def __init__(self):
         self.ODM = None
@@ -43,32 +44,32 @@ class RequestHandler:
             "p.update",
             {
                 "pid": pid,
-                'modification':modification
+                'modification': modification
             }
         )
 
     async def delete_postings(self, uid, pid):
         result = await self.update_user_postings_after_delete(uid, {"postings": pid})
-        return await self.exec("p.remove", {"list_of_pid":[pid]})
+        return await self.exec("p.remove", {"list_of_pid": [pid]})
 
-    async def create_postings(self, P:Posting):
+    async def create_postings(self, P: Posting):
         payload = {"new_post": P.to_dict()}
         # return await self.exec("p.new", payload)
         result = await self.exec("p.new", payload)
         result = json.loads(result)['result']
         print("shenmejiba", result)
         status, new_pid, uid = result['status'], result['pid'], P.get_uid()
-        update_user_result = await self.update_user_postings(uid, {"postings":new_pid})
-        print("!!!!",update_user_result)
+        update_user_result = await self.update_user_postings(uid, {"postings": new_pid})
+        print("!!!!", update_user_result)
 
         return {"status": 200, "message": "success"}
 
-    async def create_user(self, U:User):
+    async def create_user(self, U: User):
         payload = {"new_user": U.to_dict()}
         return await self.exec("u.new", payload)
 
     async def get_user(self, username):
-        payload = {"username": username} #nickname for now change later
+        payload = {"username": username}  # nickname for now change later
         return await self.exec("u.get", payload)
 
     async def get_user_by_id(self, uid):
@@ -86,7 +87,6 @@ class RequestHandler:
             "modification": modification
         }
         return await self.exec("u.update", payload)
-
 
     async def update_user_postings(self, uid, modification):
         payload = {
@@ -127,7 +127,6 @@ class RequestHandler:
         # update liked posting liked list
         update_like_result = await self.update_p_new_like(pid, new_pid)
 
-
         return {"status": 200, "message": "success"}
 
     async def search(self, query):
@@ -137,3 +136,25 @@ class RequestHandler:
             return result
         else:
             return []
+
+    async def u_follow(self, username, username_to_follow):
+        if username_to_follow and username:
+            result = await self.exec(
+                "u.follow",
+                {"username": username, "username_to_follow": username_to_follow}
+            )
+            result = json.loads(result)
+            return result
+        else:
+            return None
+
+    async def u_unfollow(self, username, username_to_unfollow):
+        if username_to_unfollow and username:
+            result = await self.exec(
+                "u.unfollow",
+                {"username": username, "username_to_unfollow": username_to_unfollow}
+            )
+            result = json.loads(result)
+            return result
+        else:
+            return None

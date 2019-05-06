@@ -41,6 +41,7 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
 
                 'u.get_plist', 'u.get', 'u.get_by_id', 'u.auth', 'u.new', 'u.remove',
                 'u.update', 'u.update_postings', 'u.update_postings_after_delete', 'u.freeze',
+                'u.follow', 'u.unfollow',
 
                 'search',
 
@@ -84,6 +85,11 @@ async def on_message(exchange: Exchange, message: IncomingMessage):
                     payload.get("uid", None),
                     payload.get("modification", None)
                 )
+            elif method == "u.follow":
+                db_response = await odc.u_follow(payload.get("username", None), payload.get("username_to_follow", None))
+            elif method == "u.unfollow":
+                db_response = await odc.u_unfollow(payload.get("username", None), payload.get("username_to_unfollow", None))
+
             elif method == "search":
                 db_response = await odc.search(payload.get("query", None))
 

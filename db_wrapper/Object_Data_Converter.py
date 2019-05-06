@@ -145,6 +145,45 @@ class OD_Converter:
         print(result)
         return {"status": 200, "message": "user postings updated"}
 
+    async def u_follow(self, username, username_to_follow):
+        uid = await self.u_get(username)
+        target_uid = await self.u_get(username_to_follow)
+        uid = uid.get("uid", None)
+        target_uid = target_uid.get("uid", None)
+        user_following = await self.u_get_follow_list(username)
+        if target_uid not in user_following:
+            resultFollow = await self.mongo_client.insertToListByKeyValue(
+                "user_content", "profiles", "uid", uid,
+                {"following": target_uid}
+            )
+            resultBeFollowed = await self.mongo_client.insertToListByKeyValue(
+                "user_content", "profiles", "uid", target_uid,
+                {"followers": uid}
+            )
+            return {"status": 200, "message": "finished"}
+        else:
+            return {"status": 403, "message": "already following"}
+
+    async def u_get_follow_list(self, username):
+        user = await self.u_get(username)
+        return user.get("following", [])
+
+    async def u_unfollow(self, username, username_to_unfollow):
+        uid = await self.u_get(username)
+        target_uid = await self.u_get(username_to_unfollow)
+        print(username,"->",uid, username_to_unfollow,"->",target_uid)
+        uid = uid.get("uid", None)
+        target_uid = target_uid.get("uid", None)
+        resultFollow = await self.mongo_client.pullToListByKeyValue(
+            "user_content", "profiles", "uid", uid,
+            {"following": target_uid}
+        )
+        resultBeUnfollowed = await self.mongo_client.pullToListByKeyValue(
+            "user_content", "profiles", "uid", target_uid,
+            {"followers": uid}
+        )
+        return {"status": 200, "message": "finished"}
+
     async def search(self, query):
         results = \
             await self.mongo_client.findByKeyValueApprox("user_content", "profiles", "username", query)+ \
