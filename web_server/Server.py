@@ -127,6 +127,50 @@ async def p_read_many(request):
         print(result)
     return json(j.loads(result))
 
+@app.route("/api/p/feed/", methods=["POST", "OPTIONS"])
+@protected()
+async def feed(request):
+    if DEV:
+        print(request.json)
+        from pprint import pprint
+
+    # get username from request
+    username = request.json.get("username", None)
+    assert username != None
+    # get user information
+    user = await logic.get_user(username)
+    user = j.loads(user).get("result", None)
+
+    # generate a list of uid to get their posting
+    target_uids = user.get("following", [])
+    target_pids = user.get("postings", []).copy()
+    for uid in target_uids:
+        target_user = await logic.get_user_by_id(uid)
+        target_user = j.loads(target_user).get("result", None)
+        target_pids += target_user.get("postings", [])
+    result = await logic.get_postings_batch(target_pids)
+    result = j.loads(result)
+
+    need_root_content_pids = [r['root'] for r in result['result'] if r['root']]
+    print("1->", need_root_content_pids)
+    # 2. get content for the list of pids
+    root_contents = j.loads(await logic.get_postings_batch(need_root_content_pids))['result']
+    print("2->", root_contents)
+    # 3. fill in the root content
+    root_contents_map_to_pid = {}
+    for root_content in root_contents:
+        root_contents_map_to_pid[root_content['pid']] = root_content
+    for r in result['result']:
+        if r['root']:
+            r['root_content'] = root_contents_map_to_pid[r['root']]
+
+    # 4. reverse chronological order
+    result['result'].reverse()
+
+    if DEV: pprint(result)
+
+    return json(result)
+
 
 @app.route("/api/p/read_my_posts/", methods=['POST', 'OPTIONS'])
 @protected()
